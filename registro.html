@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+</head>
+
+<body>
+    <label for="materia"></label>
+    <select id="materia" name="materia">
+        <option value="seleziona">Seleziona materia</option>
+        <option value="italiano">Italiano</option>
+        <option value="inglese">Inglese</option>
+        <option value="scienza">Scienza</option>
+        <option value="matematica">Matematica</option>
+    </select>
+    <div>
+        <button onclick="previousDay()"><</button>
+        <id="dateDisplay"> <span id="currentDate">2023-12-16</span></id=>
+        <button onclick="nextDay()">></button>
+    </div>
+    <table>
+        <tr>
+            <th>Studente <button type="button">+</button></th>
+            <th>Presenza</th>
+            <th>Orario entrata</th>
+            <th>Orario uscita</th>
+            <th>Compito</th>
+            <th>Voto</th>
+        </tr>
+        <tr>
+            <td></td>
+            <td><input type="radio" id="presenza" name="presenza" value="presenza"></td>
+            <td></td>
+            <td></td>
+            <td><input type="radio" id="compito" name="compito" value="compito"></td>
+            <td></td>
+        </tr>
+    </table>
+</body>
+
+</html>
