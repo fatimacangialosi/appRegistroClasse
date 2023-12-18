@@ -1,0 +1,76 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(to bottom, #007BFF, #4CAF50);
+}
+
+h1 {
+    text-align: center;
+    color: #fff;
+}
+
+div {
+    margin: 20px;
+}
+
+/* Stile per i bottoni delle materie (Blu) */
+button[type="button"]:nth-child(1),
+button[type="button"]:nth-child(2),
+button[type="button"]:nth-child(3),
+button[type="button"]:nth-child(4) {
+    padding: 10px;
+    margin: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #191970; /* Tasto Materie */
+    color: white;
+}
+button[type="button"]:nth-child(1):hover {
+    background-color: #565690; /* Colore scuro al passaggio del mouse */
+}button[type="button"]:nth-child(2):hover {
+    background-color: #565690; /* Colore scuro al passaggio del mouse */
+}button[type="button"]:nth-child(3):hover {
+    background-color: #565690; /* Colore scuro al passaggio del mouse */
+}button[type="button"]:nth-child(4):hover {
+    background-color: #565690; /* Colore scuro al passaggio del mouse */
+}
+
+/* Stile per i bottoni "Aggiungi materia +" */
+button[type="button+"]:nth-child(1) {
+    padding: 10px;
+    margin: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #006400; /* Verde per "Aggiungi materia +" */
+    color: white;
+}
+
+button[type="button+"]:nth-child(1):hover {
+    background-color: #1d865c; /* Colore scuro al passaggio del mouse */
+}
+
+/* Stile per i bottoni "Aggiungi studente +" (Verde) */
+button[type="button+"]:nth-child(2) {
+    padding: 10px;
+    margin: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #006400; /* Verde per "Aggiungi studente +" */
+    color: white;
+}
+
+button[type="button+"]:nth-child(2):hover {
+    background-color: #1d865c; /* Colore scuro al passaggio del mouse */
+}
