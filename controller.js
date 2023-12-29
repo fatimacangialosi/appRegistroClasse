@@ -1,10 +1,10 @@
 import SchoolRecord from "./register.js";
-import StudentList from "./studentList.js";
+import Student from "./student.js";
 
 let registers = localStorage.getItem("register")
   ? JSON.parse(localStorage.getItem("register"))
   : [];
-const studentList = new StudentList();
+const student = new Student();
 
 function createRegister(nameMatter) {
   const newRegister = new SchoolRecord(1, nameMatter);
