@@ -1,59 +1,91 @@
-/*constructor(iname, lastName, email, lessonId) {
-  this.id = Math.random().toString(16).slice(2) + Date.now().toString(16);
-  this.name = iname; // Modifica questa linea
-  this.lastName = lastName;
-  this.email = email;
-  this.lesson = lessonId;
-}
-}*/
-// Esporta la classe Student
+//import Student from "./student";
 
-// Registro degli studenti
-let studentList = [];
-
-function createStudent(iname, lastName, email, lessonId) {
-  const newStudent = new Student(iname, lastName, email, lessonId);
-  studentList.push(newStudent);
-  return newStudent;
-}
-
-function connectStudentToRegister(student, lessonId) {
-  const foundedStudent = studentList.find((a) => a.id === student.id);
-  if (foundedStudent) {
-    foundedStudent.lessonId = lessonId;
-    console.log(
-      `Connessione dello studente: ${foundedStudent.iname} riuscita con la lezione ${lessonId}`
-    );
-    return true;
-  } else {
-    console.log(
-      `Connessione dello studente con ID ${student.id} non riuscita con la lezione ${lessonId}`
-    );
-    return false;
+class Student {
+  constructor() {
+    this.studentList = JSON.parse(localStorage.getItem("AllStudents")) || [];
   }
-}
+  // Lista di tutti gli studenti
+  //studentList = [];
 
-function deleteStudent(studentId) {
-  const studentIndex = studentList.findIndex(
-    (student) => student.id === studentId
-  );
-  if (studentIndex !== -1) {
-    const deletedStudent = studentList.splice(studentIndex, 1)[0];
-    console.log(`Studente ${deletedStudent.name} rimosso con successo.`);
-  } else {
-    console.log(`Studente con ID ${studentId} non trovato.`);
+  createStudent(id, iname, lastName, email, phoneNumber) {
+    const newStudent = {
+      id: id, //Math.random().toString(16).slice(2) + Date.now().toString(16);
+      name: iname, // Modifica questa linea
+      lastName: lastName,
+      email: email,
+      phoneNumber: phoneNumber,
+    };
+    this.studentList.push(newStudent);
+    console.log(newStudent);
+    return newStudent;
+  }
+
+  getStudents() {
+    return this.studentList;
+  }
+
+  getStudent(studentId) {
+    const foundedStudent = this.studentList.find((a) => a.id === studentId);
+    return foundedStudent;
+  }
+
+  updateStudent({ studentId, name, lastName, email, phoneNumber }) {
+    const studentIndex = this.studentList.forEach((student) => {
+      if (student.id === studentId) {
+        name ? (student.name = name) : (student.name = student.name);
+        lastName
+          ? (student.lastName = lastName)
+          : (student.lastName = student.lastName);
+        email ? (student.email = email) : (student.email = student.email);
+        phoneNumber
+          ? (student.phoneNumber = phoneNumber)
+          : (student.phoneNumber = student.phoneNumber);
+      }
+    });
+    /*studentIndex.iname = iname;
+      studentIndex.lastName = lastName;
+      studentIndex.email = email;
+      studentIndex.phoneNumber = phoneNumber;*/
+    return studentIndex;
+  }
+  /*function connectStudentToRegister(student, lessonId) {
+      const foundedStudent = studentList.find((a) => a.id === student.id);
+      if (foundedStudent) {
+        foundedStudent.lessonId = lessonId;
+        console.log(
+          `Connessione dello studente: ${foundedStudent.iname} riuscita con la lezione ${lessonId}`
+        );
+        return true;
+      } else {
+        console.log(
+          `Connessione dello studente con ID ${student.id} non riuscita con la lezione ${lessonId}`
+        );
+        return false;
+      }
+    }*/
+
+  deleteStudent(studentId) {
+    const studentIndex = this.studentList.findIndex(
+      (student) => student.id === studentId
+    );
+    if (studentIndex !== -1) {
+      const deletedStudent = this.studentList.splice(studentIndex, 1)[0];
+      console.log(`Studente ${deletedStudent.name} rimosso con successo.`);
+    } else {
+      console.log(`Studente con ID ${studentId} non trovato.`);
+    }
   }
 }
 
 /*function updateStudent(){};
-function getStudent(
-);
-function assignStudentVote();
-function updateStudentVote();
-deleteStudentVote();
-createAttendance();
-deleteAttendance();
-updateAttendence();*/
+    function getStudent(
+    );
+    function assignStudentVote();
+    function updateStudentVote();
+    deleteStudentVote();
+    createAttendance();
+    deleteAttendance();
+    updateAttendence();*/
 
 // remainder class Student {
 //constructor(iname, lastName, email, lessonId)
@@ -84,3 +116,20 @@ const student3 = {
 //SchoolRecord.addStudent(student1);
 //SchoolRecord.addStudent(student2);
 //SchoolRecord.deleteStudent("3");
+
+//createStudent(1, "giuseppe", "barca", "pino@pino.it", "3281'01202");
+//createStudent(2, "giuseppe", "barca", "pino@pino.it", "3281'01202");
+//updateStudent({ studentId: 1, name: "alessandro" });
+//console.log(getStudent(1));
+export default Student;
+
+/*const studentList = new StudentList();
+  studentList.createStudent(1, "giuseppe", "barca", "pino@pino.it", "3281'01202");
+  studentList.createStudent(
+    2,
+    "fatima",
+    "cangialosi",
+    "fatim@pino.it",
+    "3281'01202"
+  );
+  studentList.getStudent(1);*/
