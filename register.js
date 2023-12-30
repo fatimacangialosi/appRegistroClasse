@@ -1,3 +1,5 @@
+//import student from "./controller";
+
 class SchoolRecord {
   constructor(idRecord, subjectName) {
     this.idRecord = idRecord;
@@ -7,9 +9,11 @@ class SchoolRecord {
     this.lessonList = [];
   }
 
-  attendances;
-  addStudent(student) {
-    this.studentList.push(student);
+  //attendances;
+  addStudent(...studentId) {
+    studentId.forEach((elem) => {
+      this.studentList.push(elem);
+    });
   }
 
   addGrade(gradeId, gradeDate, gradeValue, studentId) {
