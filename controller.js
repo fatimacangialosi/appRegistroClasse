@@ -5,7 +5,10 @@ let registers = localStorage.getItem("register")
   ? JSON.parse(localStorage.getItem("register"))
   : [];
 const student = new Student();
-
+function connectMatterToRegister(nameMatter) {
+  sessionStorage.setItem("nameMatter", nameMatter);
+  window.location.href="registro.html"
+}
 function createRegister(nameMatter) {
   const newRegister = new SchoolRecord(1, nameMatter);
   registers.push(newRegister);
@@ -30,8 +33,9 @@ document.addEventListener("DOMContentLoaded", function () {
     gestisciDOMHome();
   } else if (pathname.includes("registro.html")) {
     gestisciDOMRegistro();
+  }  else if (pathname.includes("studenti.html")) {
+    gestisciDOMStudenti();
   }
-
   function gestisciDOMHome() {
     //QUI IL CODICE PER GESTIRE LA HOME
     function getNameMatter() {
@@ -55,22 +59,43 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     function viewButtonMatter() {
       const divButtonMatter = document.getElementById("divButtonMatter");
-      if (divButtonMatter) {
-        console.log("ci siamo");
-        console.log(registers);
-      } else {
-        console.log("no");
-      }
+      divButtonMatter.innerHTML = ""; // Clear existing content
       registers.forEach((element) => {
-        divButtonMatter.innerHTML += `<button type="button" class="btn btn-primary btn-lg">${element.subjectName}</button>`;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "btn btn-primary btn-lg";
+        button.textContent = element.subjectName;
+        button.addEventListener("click", function () {
+          connectMatterToRegister(element.subjectName);
+        });
+        divButtonMatter.appendChild(button);
+      });
+      
+    }
+    /*function connectMatterToRegister() {
+      const btnNameMatter = document.getElementById("btnNameMatter");
+      btnCreateRegister.addEventListener("click", () => {
+        const nameMatter = document.getElementById("recipient-name").value;
+        createRegister(nameMatter);
       });
     }
+    function connectMatterToRegister(nameMatter){
+      sessionStorage.setItem("nameMatter", nameMatter);
+      window.location.href="registro.html"
+    }*/
     getNameMatter();
     getDataStudent();
     viewButtonMatter();
   }
+  
   function gestisciDOMRegistro() {
     //LE FUNZIONI PER IL POPOLAMENTO DELLA TABLE NEL REGISTRO VANNO QUI
+    function populateNameMatter(){
+      const nameMatter= sessionStorage.getItem("nameMatter")
+      const h2 = document.getElementById("hmatter");
+      h2.innerHTML="";
+      h2.innerHTML+= `${nameMatter}`;
+    }
     function populateAddStudentModal() {
       const btnOpenMod = document.getElementById("btnOpenMod");
       if (btnOpenMod) {
@@ -89,7 +114,9 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
     populateAddStudentModal();
+    populateNameMatter();
   }
+  
 });
 
 //export default student;
