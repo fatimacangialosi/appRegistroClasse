@@ -116,7 +116,10 @@ document.addEventListener("DOMContentLoaded", function () {
     populateAddStudentModal();
     populateNameMatter();
   }
-  
+  //FUNZIONI GESTIONE DOM STUDENTI
+  function gestisciDOMStudenti(){
+
+  }
 });
 
 //export default student;
