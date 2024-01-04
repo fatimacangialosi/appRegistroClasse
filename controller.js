@@ -113,14 +113,14 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   function gestisciDOMHome() {
     //QUI IL CODICE PER GESTIRE LA HOME
-    function getNameMatter() {
+    function addNewMatterToRegister() {
       const btnCreateRegister = document.getElementById("btnCreateRegister");
       btnCreateRegister.addEventListener("click", () => {
         const nameMatter = document.getElementById("recipient-name").value;
         createRegister(nameMatter);
       });
     }
-    function getDataStudent() {
+    function addNewStudentToApp() {
       const btnCreateStudent = document.getElementById("btnCreateStudent");
       btnCreateStudent.addEventListener("click", () => {
         const nameS = document.getElementById("student-name").value;
@@ -157,8 +157,8 @@ document.addEventListener("DOMContentLoaded", function () {
       sessionStorage.setItem("nameMatter", nameMatter);
       window.location.href="registro.html"
     }*/
-    getNameMatter();
-    getDataStudent();
+    addNewMatterToRegister();
+    addNewStudentToApp();
     viewButtonMatter();
   }
 
@@ -294,6 +294,11 @@ document.addEventListener("DOMContentLoaded", function () {
         studentTable.appendChild(row);
       }*/
     }
+    populateRegisterTable();
+    populateAddStudentModal();
+    populateNameMatter();
+  }
+  function gestisciDOMStudenti() {
     function populateStudentTable() {
       //SPOSTARE NEL gestisciDOMStudente()
       const headerRow = document.createElement("tr");
@@ -343,9 +348,6 @@ document.addEventListener("DOMContentLoaded", function () {
         studentTable.appendChild(row);
       }
     }
-    populateRegisterTable();
-    populateAddStudentModal();
-    populateNameMatter();
   }
 });
 
