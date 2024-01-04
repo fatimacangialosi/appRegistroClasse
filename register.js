@@ -15,6 +15,9 @@ class SchoolRecord {
   getLessonList() {
     return this.lessonList;
   }
+  getGradeList() {
+    return this.gradeList;
+  }
   //attendances;
   addStudent(...studentId) {
     studentId.forEach((elem) => {

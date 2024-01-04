@@ -201,7 +201,6 @@ document.addEventListener("DOMContentLoaded", function () {
       studentList.forEach((id, index) => {
         const row = document.createElement("tr");
         const cellStud = document.createElement("td");
-        //const cellPsr = document.createElement("td");
         const cellAtdnc = document.createElement("td");
         const cellentry = document.createElement("td");
         const cellexit = document.createElement("td");
@@ -213,9 +212,10 @@ document.addEventListener("DOMContentLoaded", function () {
           cellStud.innerHTML = stud.name + stud.lastName;
           const checkboxPresenza = document.createElement("input");
           checkboxPresenza.type = "checkbox";
-
           cellAtdnc.appendChild(checkboxPresenza);
-
+          const checkboxCompito = document.createElement("input");
+          checkboxCompito.type = "checkbox";
+          cellCmp.appendChild(checkboxCompito);
           row.appendChild(cellStud);
           //row.appendChild(cellPsr);
           row.appendChild(cellAtdnc);
@@ -230,7 +230,7 @@ document.addEventListener("DOMContentLoaded", function () {
           console.log("studentList del register terminato");
         }
       });
-      //POPOLO COLONNA PRESENZE TABLE
+      //POPOLO COLONNA ORARIO PRESENZE TABLE
       const lessonDay = registers[0].getLessonList();
       console.log(lessonDay);
       lessonDay[0].attendances.forEach((elem) => {
@@ -238,10 +238,16 @@ document.addEventListener("DOMContentLoaded", function () {
         const cellEntryDaModificare = document.querySelector(
           `#${elem.studentId} td:nth-child(3)`
         );
-        if (cellEntryDaModificare) {
+        const cbPresenze = document.querySelector(
+          `#${elem.studentId} td:nth-child(2) input[type="checkbox"]`
+        );
+        if (cellEntryDaModificare && cbPresenze) {
           // Ora puoi modificare il contenuto della cella come desiderato
           console.log("eleme.entryTime: " + elem.entryTime);
-          cellEntryDaModificare.textContent = elem.entryTime;
+          if (elem.entryTime) {
+            cellEntryDaModificare.textContent = elem.entryTime;
+            cbPresenze.checked = true;
+          }
         } else {
           console.error("Riga o cella non trovata con l'id specificato");
         }
@@ -251,6 +257,28 @@ document.addEventListener("DOMContentLoaded", function () {
         if (cellEntryDaModificare2) {
           // Ora puoi modificare il contenuto della cella come desiderato
           cellEntryDaModificare2.textContent = elem.exitTime;
+        } else {
+          console.error("Riga o cella non trovata con l'id specificato");
+        }
+      });
+
+      //POPOLO COLONNA GRADE
+      const gradeDay = registers[0].getGradeList();
+      console.log(gradeDay);
+      gradeDay.forEach((grade) => {
+        const cellEntryDaModificare = document.querySelector(
+          `#${grade.studentId} td:nth-child(6)`
+        );
+        const cbCompito = document.querySelector(
+          `#${grade.studentId} td:nth-child(5) input[type="checkbox"]`
+        );
+        if (cellEntryDaModificare && cbCompito) {
+          // Ora puoi modificare il contenuto della cella come desiderato
+          console.log("grade.gradeValue: " + grade.gradeValue);
+          if (grade.gradeValue) {
+            cellEntryDaModificare.textContent = grade.gradeValue;
+            cbCompito.checked = true;
+          }
         } else {
           console.error("Riga o cella non trovata con l'id specificato");
         }
