@@ -15,13 +15,13 @@ const dummySchoolRecordData = {
   gradeList: [
     {
       gradeId: "grade1",
-      gradeDate: "2024-01-01",
+      gradeDate: "2024-01-03",
       gradeValue: 90,
       studentId: "student1",
     },
     {
       gradeId: "grade2",
-      gradeDate: "2024-01-02",
+      gradeDate: "2024-01-03",
       gradeValue: 85,
       studentId: "student2",
     },
@@ -163,13 +163,82 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function gestisciDOMRegistro() {
+    const nameMatter = sessionStorage.getItem("nameMatter");
+
     //LE FUNZIONI PER IL POPOLAMENTO DELLA TABLE NEL REGISTRO VANNO QUI
     function populateNameMatter() {
-      const nameMatter = sessionStorage.getItem("nameMatter");
       const h2 = document.getElementById("hmatter");
       h2.innerHTML = "";
       h2.innerHTML += `${nameMatter}`;
     }
+    // Funzione per inizializzare il datepicker
+    function lessonDayDatePicker() {
+      var datepickerInput = document.getElementById("datepicker");
+      datepickerInput.valueAsDate = new Date();
+
+      datepickerInput.addEventListener("input", function () {
+        console.log("Data cambiata manualmente:", datepickerInput.value);
+        populateRegisterTable(datepickerInput.value);
+      });
+
+      // Aggiunta degli eventi per i pulsanti Next e Previous
+      var btnNext = document.querySelector(".btn-next");
+      btnNext.addEventListener("click", function () {
+        var currentDate = new Date(datepickerInput.value);
+        currentDate.setDate(currentDate.getDate() + 1);
+        datepickerInput.valueAsDate = currentDate;
+        populateRegisterTable(datepickerInput.value);
+      });
+
+      var btnPrev = document.querySelector(".btn-prev");
+      btnPrev.addEventListener("click", function () {
+        var currentDate = new Date(datepickerInput.value);
+        currentDate.setDate(currentDate.getDate() - 1);
+        datepickerInput.valueAsDate = currentDate;
+        populateRegisterTable(datepickerInput.value);
+      });
+    }
+
+    lessonDayDatePicker();
+
+    /*class SimpleDatepicker {
+      constructor(element) {
+        this.datepicker = element;
+        this.setupEventListeners();
+      }
+
+      getDate() {
+        return new Date(this.datepicker.value);
+      }
+
+      setDate(date) {
+        this.datepicker.valueAsDate = date;
+      }
+
+      setupEventListeners() {
+        // Additional setup can be added here
+      }
+    }
+
+    // Datepicker Initialization
+    var datepickerInput = document.getElementById("datepicker");
+    var simpleDatepicker = new SimpleDatepicker(datepickerInput);
+
+    // Next Button Click Event
+    var btnNext = document.querySelector(".btn-next");
+    btnNext.addEventListener("click", function () {
+      var currentDate = simpleDatepicker.getDate();
+      currentDate.setDate(currentDate.getDate() + 1);
+      simpleDatepicker.setDate(currentDate);
+    });
+
+    // Previous Button Click Event
+    var btnPrev = document.querySelector(".btn-prev");
+    btnPrev.addEventListener("click", function () {
+      var currentDate = simpleDatepicker.getDate();
+      currentDate.setDate(currentDate.getDate() - 1);
+      simpleDatepicker.setDate(currentDate);
+    });*/
     function populateAddStudentModal() {
       const btnOpenMod = document.getElementById("btnOpenMod");
       if (btnOpenMod) {
@@ -187,16 +256,17 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       }
     }
-    function populateRegisterTable() {
+    function populateRegisterTable(lessonDayView) {
       //const headerRow = document.createElement("tr");
       //headerRow.innerHTML =
       //"<th>Nome</th><th>Cognome</th><th>Presenza</th><th>Orario Ingresso</th><th>Orario Uscita</th><th>Voto</th>";
-      const tBodyReg = document.getElementById("tBodyReg"); //MODIFICARE RIFERIMENTI HTML DEL FILE STUDENT
+      const tBodyReg = document.getElementById("tBodyReg");
       //tBodyAdd.appendChild(headerRow);
 
       //const students = student.getStudents();
 
       //POPOLO PRIMA COLONNA TABLE
+      tBodyReg.innerHTML = "";
       const studentList = registers[0].getStudentList();
       studentList.forEach((id, index) => {
         const row = document.createElement("tr");
@@ -231,34 +301,47 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
       //POPOLO COLONNA ORARIO PRESENZE TABLE
-      const lessonDay = registers[0].getLessonList();
-      console.log(lessonDay);
-      lessonDay[0].attendances.forEach((elem) => {
-        const rowId = document.getElementById(`${elem.studentId}`);
-        const cellEntryDaModificare = document.querySelector(
-          `#${elem.studentId} td:nth-child(3)`
+      const lessonList = registers[0].getLessonList();
+      console.log(lessonList);
+      //@@Devo cliclare a regime l'array lessonDay e vedere se c'è un giorno esistente come quello mostrato, se non c'è visualizzo vuoto (o l'alert, vediamo)
+      lessonList.forEach((lessonDay) => {
+        console.log(
+          "lessonDay.lessonDate: " +
+            lessonDay.lessonDate +
+            "\nlessonDayView: " +
+            lessonDayView
         );
-        const cbPresenze = document.querySelector(
-          `#${elem.studentId} td:nth-child(2) input[type="checkbox"]`
-        );
-        if (cellEntryDaModificare && cbPresenze) {
-          // Ora puoi modificare il contenuto della cella come desiderato
-          console.log("eleme.entryTime: " + elem.entryTime);
-          if (elem.entryTime) {
-            cellEntryDaModificare.textContent = elem.entryTime;
-            cbPresenze.checked = true;
-          }
+        if (lessonDay.lessonDate == lessonDayView) {
+          lessonDay.attendances.forEach((elem) => {
+            const rowId = document.getElementById(`${elem.studentId}`);
+            const cellEntryDaModificare = document.querySelector(
+              `#${elem.studentId} td:nth-child(3)`
+            );
+            const cbPresenze = document.querySelector(
+              `#${elem.studentId} td:nth-child(2) input[type="checkbox"]`
+            );
+            if (cellEntryDaModificare && cbPresenze) {
+              // Ora puoi modificare il contenuto della cella come desiderato
+              console.log("eleme.entryTime: " + elem.entryTime);
+              if (elem.entryTime) {
+                cellEntryDaModificare.textContent = elem.entryTime;
+                cbPresenze.checked = true;
+              }
+            } else {
+              console.error("Riga o cella non trovata con l'id specificato");
+            }
+            const cellEntryDaModificare2 = document.querySelector(
+              `#${elem.studentId} td:nth-child(4)`
+            );
+            if (cellEntryDaModificare2) {
+              // Ora puoi modificare il contenuto della cella come desiderato
+              cellEntryDaModificare2.textContent = elem.exitTime;
+            } else {
+              console.error("Riga o cella non trovata con l'id specificato");
+            }
+          });
         } else {
-          console.error("Riga o cella non trovata con l'id specificato");
-        }
-        const cellEntryDaModificare2 = document.querySelector(
-          `#${elem.studentId} td:nth-child(4)`
-        );
-        if (cellEntryDaModificare2) {
-          // Ora puoi modificare il contenuto della cella come desiderato
-          cellEntryDaModificare2.textContent = elem.exitTime;
-        } else {
-          console.error("Riga o cella non trovata con l'id specificato");
+          console.log("non è il giorno correttooo");
         }
       });
 
@@ -266,21 +349,25 @@ document.addEventListener("DOMContentLoaded", function () {
       const gradeDay = registers[0].getGradeList();
       console.log(gradeDay);
       gradeDay.forEach((grade) => {
-        const cellEntryDaModificare = document.querySelector(
-          `#${grade.studentId} td:nth-child(6)`
-        );
-        const cbCompito = document.querySelector(
-          `#${grade.studentId} td:nth-child(5) input[type="checkbox"]`
-        );
-        if (cellEntryDaModificare && cbCompito) {
-          // Ora puoi modificare il contenuto della cella come desiderato
-          console.log("grade.gradeValue: " + grade.gradeValue);
-          if (grade.gradeValue) {
-            cellEntryDaModificare.textContent = grade.gradeValue;
-            cbCompito.checked = true;
+        if (grade.gradeDate == lessonDayView) {
+          const cellEntryDaModificare = document.querySelector(
+            `#${grade.studentId} td:nth-child(6)`
+          );
+          const cbCompito = document.querySelector(
+            `#${grade.studentId} td:nth-child(5) input[type="checkbox"]`
+          );
+          if (cellEntryDaModificare && cbCompito) {
+            // Ora puoi modificare il contenuto della cella come desiderato
+            console.log("grade.gradeValue: " + grade.gradeValue);
+            if (grade.gradeValue) {
+              cellEntryDaModificare.textContent = grade.gradeValue;
+              cbCompito.checked = true;
+            }
+          } else {
+            console.error("Riga o cella non trovata con l'id specificato");
           }
         } else {
-          console.error("Riga o cella non trovata con l'id specificato");
+          console.log("non è il giorno correttooo");
         }
       });
       /*for (var i = 0; i < students.length; i++) {
@@ -322,7 +409,6 @@ document.addEventListener("DOMContentLoaded", function () {
         studentTable.appendChild(row);
       }*/
     }
-    populateRegisterTable();
     populateAddStudentModal();
     populateNameMatter();
   }
