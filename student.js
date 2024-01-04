@@ -3,6 +3,8 @@
 class Student {
   constructor() {
     this.studentList = JSON.parse(localStorage.getItem("AllStudents")) || [];
+    this.studentList.push(student1);
+    this.studentList.push(student2);
   }
   // Lista di tutti gli studenti
   //studentList = [];
@@ -93,17 +95,17 @@ class Student {
 //const schoolRecord = new SchoolRecord("school1", "Math");
 const student1 = {
   id: "1",
-  iname: "Giuseppe",
+  name: "Giuseppe",
   lastName: "Barca",
   email: "giuseppeb@gmail.com",
-  lessonId: "Math",
+  phoneNumber: "Math",
 };
 const student2 = {
   id: "2",
-  iname: "fatim",
+  name: "fatim",
   lastName: "cangialosi",
   email: "fatima@gmail.com",
-  lessonId: "Math",
+  phoneNumber: "Math",
 };
 const student3 = {
   id: "3",
