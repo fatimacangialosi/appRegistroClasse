@@ -244,14 +244,40 @@ document.addEventListener("DOMContentLoaded", function () {
       if (btnOpenMod) {
         btnOpenMod.addEventListener("click", () => {
           const tbody = document.getElementById("tBodyAdd");
+          tbody.innerHTML = "";
           student.getStudents().forEach((elem, index) => {
-            tbody.innerHTML += `<tr>
+            /*tbody.innerHTML += `<tr>
         <th scope="row">${index}</th>
         <td>${elem.name}</td>
         <td>${elem.lastName}</td>
         <td>${elem.email}</td>
         <td>${elem.phoneNumber}</td>
-      </tr>`;
+      </tr>`;*/
+            const row = document.createElement("tr");
+            const cellIndex = document.createElement("th");
+            const cellName = document.createElement("td");
+            const cellLastname = document.createElement("td");
+            const cellEmail = document.createElement("td");
+            const cellPhone = document.createElement("td");
+            const cellSelect = document.createElement("td");
+
+            cellIndex.innerText = elem.name;
+            cellName.innerText = elem.name;
+            cellLastname.innerText = elem.lastName;
+            cellEmail.innerText = elem.email;
+            cellPhone.innerText = elem.phoneNumber;
+            const checkboxSeleziona = document.createElement("input");
+            checkboxSeleziona.type = "checkbox";
+            cellSelect.appendChild(checkboxSeleziona);
+            cellIndex.scope = "row";
+            row.appendChild(cellIndex);
+            row.appendChild(cellName);
+            row.appendChild(cellLastname);
+            row.appendChild(cellEmail);
+            row.appendChild(cellPhone);
+            row.appendChild(cellSelect);
+
+            tbody.appendChild(row);
           });
         });
       }
