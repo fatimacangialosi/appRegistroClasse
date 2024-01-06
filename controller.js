@@ -19,13 +19,14 @@ const dummySchoolRecordData = {
       gradeValue: 90,
       studentId: "student1",
     },
-    {
+    /*{
       gradeId: "grade2",
       gradeDate: "2024-01-03",
       gradeValue: 85,
       studentId: "student2",
-    },
+    }*/
     // Add more grades as needed
+    ,
   ],
   lessonList: [
     {
@@ -36,6 +37,12 @@ const dummySchoolRecordData = {
           attendanceId: "attendance1",
           studentId: "student1",
           entryTime: "09:00",
+          exitTime: "12:00",
+        },
+        {
+          attendanceId: "attendance2",
+          studentId: "student2",
+          entryTime: "09:30",
           exitTime: "12:00",
         },
         // Add more attendances as needed
@@ -175,7 +182,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function lessonDayDatePicker() {
       var datepickerInput = document.getElementById("datepicker");
       datepickerInput.valueAsDate = new Date();
-
+      populateRegisterTable(new Date());
       datepickerInput.addEventListener("input", function () {
         console.log("Data cambiata manualmente:", datepickerInput.value);
         populateRegisterTable(datepickerInput.value);
@@ -302,16 +309,75 @@ document.addEventListener("DOMContentLoaded", function () {
         const cellexit = document.createElement("td");
         const cellCmp = document.createElement("td");
         const cellgrd = document.createElement("td");
+        const cellBtn = document.createElement("td");
+
+        const idStudentee = index + 1;
         const stud = student.getStudent(`${++index}`);
         console.log(stud);
         if (stud) {
           cellStud.innerHTML = stud.name + stud.lastName;
           const checkboxPresenza = document.createElement("input");
           checkboxPresenza.type = "checkbox";
+          checkboxPresenza.addEventListener("change", () => {
+            if (checkboxPresenza.checked == true) {
+              console.log("ifffff");
+              btnRowMod.style.display = "none";
+              btnRowSave.style.display = "block";
+              modifyRowStudent(checkboxPresenza, idStudentee);
+            } else {
+              //SEMBRA ENTRI SEMPRE NELL'IF IN OGNI CASO
+              alert("Presenza eliminato correttamente");
+              modifyRowStudent(checkboxPresenza, idStudentee);
+              checkboxCompito.checked = false;
+              //registers[0].dropAttendance();
+              console.log("elseee");
+            }
+            //addPsrRowStudent()
+          });
           cellAtdnc.appendChild(checkboxPresenza);
           const checkboxCompito = document.createElement("input");
           checkboxCompito.type = "checkbox";
+          checkboxCompito.id = "cmp";
+          checkboxCompito.setAttribute("disabled", true);
+          checkboxCompito.addEventListener("change", () => {
+            //console.log("ckCompito.checked: "+checkboxPre)
+            if (checkboxCompito.checked == true) {
+              console.log("ifffff");
+              modifyRowStudent(checkboxCompito, idStudentee);
+              btnRowMod.style.display = "none";
+              btnRowSave.style.display = "block";
+            } else {
+              alert("Compito eliminato correttamente");
+              modifyRowStudent(checkboxCompito, idStudentee);
+              //registers[0].dropAttendance();
+              console.log("elseee");
+            }
+            //addPsrRowStudent()
+          });
           cellCmp.appendChild(checkboxCompito);
+          const btnRowMod = document.createElement("button");
+          const btnRowSave = document.createElement("button");
+          btnRowMod.type = "button";
+          btnRowMod.class = "btn btn-primary btn-lg";
+          btnRowMod.innerText = "Modifica";
+          btnRowSave.type = "button";
+          btnRowSave.class = "btn btn-primary btn-lg";
+          btnRowSave.innerText = "Save";
+          btnRowMod.style.display = "none";
+          btnRowSave.style.display = "none";
+          btnRowMod.addEventListener("click", () => {
+            modifyRowStudent(btnRowMod, idStudentee);
+            checkboxPresenza.disabled = false;
+            checkboxCompito.disabled = false;
+            btnRowMod.style.display = "none";
+            btnRowSave.style.display = "block";
+          });
+
+          btnRowSave.addEventListener("click", () => {
+            saveModRowStudent(btnRowSave, idStudentee);
+          });
+          cellBtn.appendChild(btnRowMod);
+          cellBtn.appendChild(btnRowSave);
           row.appendChild(cellStud);
           //row.appendChild(cellPsr);
           row.appendChild(cellAtdnc);
@@ -319,7 +385,7 @@ document.addEventListener("DOMContentLoaded", function () {
           row.appendChild(cellexit);
           row.appendChild(cellCmp);
           row.appendChild(cellgrd);
-
+          row.appendChild(cellBtn);
           tBodyReg.appendChild(row);
           row.id = "student" + stud.id;
         } else {
@@ -339,19 +405,27 @@ document.addEventListener("DOMContentLoaded", function () {
         );
         if (lessonDay.lessonDate == lessonDayView) {
           lessonDay.attendances.forEach((elem) => {
-            const rowId = document.getElementById(`${elem.studentId}`);
+            const btnSave = document.querySelector(
+              `#${elem.studentId} td:nth-child(7) button[type="button"]`
+            );
             const cellEntryDaModificare = document.querySelector(
               `#${elem.studentId} td:nth-child(3)`
             );
             const cbPresenze = document.querySelector(
               `#${elem.studentId} td:nth-child(2) input[type="checkbox"]`
             );
+            const cbCmp = document.querySelector(
+              `#${elem.studentId} td:nth-child(5) input[type="checkbox"]`
+            );
             if (cellEntryDaModificare && cbPresenze) {
               // Ora puoi modificare il contenuto della cella come desiderato
+              btnSave.style.display = "block";
+              cbCmp.disabled = false;
               console.log("eleme.entryTime: " + elem.entryTime);
               if (elem.entryTime) {
                 cellEntryDaModificare.textContent = elem.entryTime;
                 cbPresenze.checked = true;
+                cbPresenze.disabled = true;
               }
             } else {
               console.error("Riga o cella non trovata con l'id specificato");
@@ -388,6 +462,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (grade.gradeValue) {
               cellEntryDaModificare.textContent = grade.gradeValue;
               cbCompito.checked = true;
+              cbCompito.disabled = true;
             }
           } else {
             console.error("Riga o cella non trovata con l'id specificato");
@@ -434,6 +509,119 @@ document.addEventListener("DOMContentLoaded", function () {
 
         studentTable.appendChild(row);
       }*/
+    }
+
+    function modifyRowStudent(button, id) {
+      console.log(button.type);
+      const ckPsr = document.querySelector(
+        `#student${id} td:nth-child(2) input[type="checkbox"]`
+      );
+      const cellEntry = document.querySelector(`#student${id} td:nth-child(3)`);
+      const cellExit = document.querySelector(`#student${id} td:nth-child(4)`);
+      const ckCmp = document.querySelector(
+        `#student${id} td:nth-child(5) input[type="checkbox"]`
+      );
+      const cellGrd = document.querySelector(`#student${id} td:nth-child(6)`);
+      const btnMod = document.querySelector(
+        `#student${id} td:nth-child(7) button[type="button"]`
+      );
+      const contentEntry = cellEntry.textContent;
+      const contentExit = cellExit.textContent;
+
+      const inputEntry = document.createElement("input");
+      inputEntry.type = "time";
+      inputEntry.id = "fentry";
+      inputEntry.name = "fentry";
+      const inputExit = document.createElement("input");
+      inputExit.type = "time";
+      inputExit.id = "fexit";
+      inputExit.name = "fexit";
+      if (button.type == "button" && contentEntry && contentExit) {
+        inputEntry.value = contentEntry;
+
+        inputExit.value = contentExit;
+        console.log(contentEntry, contentExit);
+        cellEntry.innerHTML = "";
+        cellEntry.appendChild(inputEntry);
+        cellExit.innerHTML = "";
+        cellExit.appendChild(inputExit);
+        if (cellGrd.textContent != "") {
+          const contentGrade = cellGrd.textContent;
+          const inputGrade = document.createElement("input");
+          inputGrade.type = "number";
+          inputGrade.id = "fgrade";
+          inputGrade.name = "fgrade";
+          inputGrade.min = "0";
+          inputGrade.max = "100";
+          inputGrade.value = contentGrade;
+          cellGrd.innerHTML = "";
+          cellGrd.appendChild(inputGrade);
+        }
+      } else {
+        console.log(button.id);
+        if (button.id == "cmp") {
+          //significa che è stato cliccato il chbox grade
+          if (ckCmp.checked == true) {
+            const contentGrade = cellGrd.textContent;
+            const inputGrade = document.createElement("input");
+            inputGrade.type = "number";
+            inputGrade.id = "fgrade";
+            inputGrade.name = "fgrade";
+            inputGrade.min = "0";
+            inputGrade.max = "100";
+            //inputGrade.value = contentGrade;
+            cellGrd.innerHTML = "";
+            cellGrd.appendChild(inputGrade);
+          } else {
+            //alert("checkbox spenta");
+            cellGrd.innerHTML = "";
+          }
+        } else {
+          if (ckPsr.checked == true) {
+            console.log("else else");
+            cellEntry.innerHTML = "";
+            cellEntry.appendChild(inputEntry);
+            cellExit.innerHTML = "";
+            cellExit.appendChild(inputExit);
+            if (ckCmp.checked == true) {
+              const inputGrade = document.createElement("input");
+              inputGrade.type = "number";
+              inputGrade.id = "fgrade";
+              inputGrade.name = "fgrade";
+              inputGrade.min = "0";
+              inputGrade.max = "100";
+              //inputGrade.value = contentGrade;
+              cellGrd.innerHTML = "";
+              cellGrd.appendChild(inputGrade);
+            } else {
+              cellGrd.innerHTML = "";
+            }
+          } else {
+            cellEntry.innerHTML = "";
+            cellExit.innerHTML = "";
+            cellGrd.innerHTML = "";
+          }
+        }
+      }
+    }
+    function saveModRowStudent(button, id) {
+      const ckPsr = document.querySelector(
+        `#student${id} td:nth-child(2) input[type="checkbox"]`
+      );
+      const cellEntry = document.querySelector(`#student${id} td:nth-child(3)`);
+      const cellExit = document.querySelector(`#student${id} td:nth-child(4)`);
+      const ckCmp = document.querySelector(
+        `#student${id} td:nth-child(5) input[type="checkbox"]`
+      );
+      const cellGrd = document.querySelector(`#student${id} td:nth-child(6)`);
+      const btnMod = document.querySelector(
+        `#student${id} td:nth-child(7) button[type="button"]`
+      );
+      const contentEntry = cellEntry.textContent;
+      const contentExit = cellExit.textContent;
+
+      if (ckPsr.checked == true) {
+      }
     }
     populateAddStudentModal();
     populateNameMatter();

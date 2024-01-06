@@ -37,8 +37,8 @@ class SchoolRecord {
 
   addLesson(
     lessonId = Math.random().toString(16).slice(2) + Date.now().toString(16),
-    lessonDate,
-    lessonStudentList
+    lessonDate
+    //lessonStudentList
   ) {
     const lesson = {
       lessonId: lessonId,
@@ -121,7 +121,7 @@ class SchoolRecord {
     }
   }
   //////////////////////////////
-  dropAttendence(lessonId, studentId) {
+  dropAttendance(lessonId, studentId) {
     /*const attendances = {
     lessonId: lessonId,
     studentId: studentId,
