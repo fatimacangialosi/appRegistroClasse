@@ -3,8 +3,8 @@
 class Student {
   constructor() {
     this.studentList = JSON.parse(localStorage.getItem("AllStudents")) || [];
-    this.studentList.push(student1);
-    this.studentList.push(student2);
+    //this.studentList.push(student1);
+    //this.studentList.push(student2);
   }
   // Lista di tutti gli studenti
   //studentList = [];
@@ -21,6 +21,7 @@ class Student {
       phoneNumber: phoneNumber,
     };
     this.studentList.push(newStudent);
+    localStorage.setItem("AllStudents", JSON.stringify(this.studentList));
     console.log(newStudent);
     return newStudent;
   }
@@ -39,10 +40,14 @@ class Student {
     console.log("studentId: " + studentId);
     console.log("name: " + lastName);
     const studentIndex = this.studentList.findIndex(
-      (student) => student.id === studentId
+      //(student) => student.id === studentId
+      function (student) {
+        console.log(student.id);
+        return student.id === studentId;
+      }
     );
     console.log(studentIndex);
-    if (studentIndex === 0) {
+    if (studentIndex != -1) {
       this.studentList[studentIndex].name = name;
       this.studentList[studentIndex].lastName = lastName;
       this.studentList[studentIndex].email = email;
@@ -70,6 +75,8 @@ class Student {
       studentIndex.lastName = lastName;
       studentIndex.email = email;
       studentIndex.phoneNumber = phoneNumber;*/
+    localStorage.setItem("AllStudents", JSON.stringify(this.studentList));
+
     return studentIndex;
   }
   /*function connectStudentToRegister(student, lessonId) {
@@ -98,6 +105,7 @@ class Student {
     } else {
       console.log(`Studente con ID ${studentId} non trovato.`);
     }
+    localStorage.setItem("AllStudents", JSON.stringify(this.studentList));
   }
 }
 

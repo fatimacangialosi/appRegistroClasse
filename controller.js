@@ -312,7 +312,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const cellBtn = document.createElement("td");
 
           const idStudentee = index + 1;
-          const stud = student.getStudent(`${++index}`);
+          const stud = student.getStudent(id);
           console.log(stud);
           if (stud) {
             cellStud.innerHTML = stud.name + stud.lastName;
@@ -387,7 +387,7 @@ document.addEventListener("DOMContentLoaded", function () {
             row.appendChild(cellgrd);
             row.appendChild(cellBtn);
             tBodyReg.appendChild(row);
-            row.id = "student" + stud.id;
+            row.id = stud.id;
           } else {
             console.log("studentList del register terminato");
           }
@@ -666,7 +666,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const cellDelete = document.createElement("td");
 
         cellIndex.innerText = index + 1;
-        row.id = "student" + elem.id;
+        row.id = elem.id;
         cellName.innerText = elem.name;
         cellLastname.innerText = elem.lastName;
         cellEmail.innerText = elem.email;
@@ -763,17 +763,15 @@ document.addEventListener("DOMContentLoaded", function () {
       }*/
     }
     function modStudentRow(id) {
-      const cellName = document.querySelector(`#student${id} td:nth-child(2)`);
-      const cellLastName = document.querySelector(
-        `#student${id} td:nth-child(3)`
-      );
-      const cellEmail = document.querySelector(`#student${id} td:nth-child(4)`);
-      const cellPhone = document.querySelector(`#student${id} td:nth-child(5)`);
+      const cellName = document.querySelector(`#${id} td:nth-child(2)`);
+      const cellLastName = document.querySelector(`#${id} td:nth-child(3)`);
+      const cellEmail = document.querySelector(`#${id} td:nth-child(4)`);
+      const cellPhone = document.querySelector(`#${id} td:nth-child(5)`);
       const btnMod = document.querySelector(
-        `#student${id} td:nth-child(6) button[type="button"]:nth-child(1)`
+        `#${id} td:nth-child(6) button[type="button"]:nth-child(1)`
       );
       const btnSave = document.querySelector(
-        `#student${id} td:nth-child(6) button[type="button"]:nth-child(2)`
+        `#${id} td:nth-child(6) button[type="button"]:nth-child(2)`
       );
       if (btnMod) {
         console.log("pulsante lo abbiamooo");
@@ -817,25 +815,19 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
     function saveStudentRow(id, e) {
-      const idCorretto = id[id.length - 1];
-      console.log(idCorretto);
-      const cellName = document.querySelector(
-        `#student${id} td:nth-child(2) input`
-      );
+      //const idCorretto = id[id.length - 1];
+      //console.log(idCorretto);
+      const cellName = document.querySelector(`#${id} td:nth-child(2) input`);
       const cellLastName = document.querySelector(
-        `#student${id} td:nth-child(3) input`
+        `#${id} td:nth-child(3) input`
       );
-      const cellEmail = document.querySelector(
-        `#student${id} td:nth-child(4) input`
-      );
-      const cellPhone = document.querySelector(
-        `#student${id} td:nth-child(5) input`
-      );
+      const cellEmail = document.querySelector(`#${id} td:nth-child(4) input`);
+      const cellPhone = document.querySelector(`#${id} td:nth-child(5) input`);
       const btnMod = document.querySelector(
-        `#student${id} td:nth-child(6) button[type="button"]:nth-child(1)`
+        `#${id} td:nth-child(6) button[type="button"]:nth-child(1)`
       );
       const btnSave = document.querySelector(
-        `#student${id} td:nth-child(6) button[type="button"]:nth-child(2)`
+        `#${id} td:nth-child(6) button[type="button"]:nth-child(2)`
       );
       if (btnMod) {
         console.log("pulsante lo abbiamooo");
@@ -846,7 +838,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const contentPhone = cellPhone.value;
       console.log(contentLastName);
       student.updateStudent({
-        studentId: idCorretto,
+        studentId: id,
         name: contentName,
         lastName: contentLastName,
         email: contentEmail,
