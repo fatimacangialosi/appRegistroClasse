@@ -369,10 +369,10 @@ document.addEventListener("DOMContentLoaded", function () {
             const btnRowMod = document.createElement("button");
             const btnRowSave = document.createElement("button");
             btnRowMod.type = "button";
-            btnRowMod.class = "btn btn-primary btn-lg";
+            btnRowMod.className = "btn btn-primary btn-lg";
             btnRowMod.innerText = "Modifica";
             btnRowSave.type = "button";
-            btnRowSave.class = "btn btn-primary btn-lg";
+            btnRowSave.className = "btn btn-primary btn-lg";
             btnRowSave.innerText = "Save";
             btnRowMod.style.display = "none";
             btnRowSave.style.display = "none";
@@ -657,7 +657,75 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   function gestisciDOMStudenti() {
     function populateStudentTable() {
-      //SPOSTARE NEL gestisciDOMStudente()
+      const tbody = document.getElementById("tBodyStd");
+      tbody.innerHTML = "";
+      student.getStudents().forEach((elem, index) => {
+        /*tbody.innerHTML += `<tr>
+        <th scope="row">${index}</th>
+        <td>${elem.name}</td>
+        <td>${elem.lastName}</td>
+        <td>${elem.email}</td>
+        <td>${elem.phoneNumber}</td>
+      </tr>`;*/
+        const row = document.createElement("tr");
+        const cellIndex = document.createElement("td");
+        const cellName = document.createElement("td");
+        const cellLastname = document.createElement("td");
+        const cellEmail = document.createElement("td");
+        const cellPhone = document.createElement("td");
+        const cellUpdate = document.createElement("td");
+        const cellDelete = document.createElement("td");
+
+        cellIndex.innerText = index + 1;
+        row.id = "student" + elem.id;
+        cellName.innerText = elem.name;
+        cellLastname.innerText = elem.lastName;
+        cellEmail.innerText = elem.email;
+        cellPhone.innerText = elem.phoneNumber;
+        const buttonUpdate = document.createElement("button");
+        buttonUpdate.type = "button";
+        buttonUpdate.textContent = "Modifica";
+        buttonUpdate.className = "btn btn-primary";
+        buttonUpdate.addEventListener("click", () => {
+          modStudentRow(elem.id);
+          buttonUpdate.style.display = "none";
+          buttonSave.style.display = "block";
+          buttonDelete.style.display = "none";
+        });
+        const buttonSave = document.createElement("button");
+        buttonSave.type = "button";
+        buttonSave.textContent = "Salva";
+        buttonSave.className = "btn btn-primary";
+        buttonSave.style.display = "none";
+        buttonSave.addEventListener("click", (e) => {
+          saveStudentRow(elem.id, e);
+          buttonSave.style.display = "none";
+          buttonUpdate.style.display = "block";
+          buttonDelete.style.display = "block";
+        });
+        const buttonDelete = document.createElement("button");
+        buttonDelete.type = "button";
+        buttonDelete.textContent = "Elimina";
+        buttonDelete.className = "btn btn-primary";
+        buttonDelete.addEventListener("click", (e) => {
+          student.deleteStudent(elem.id);
+          populateStudentTable();
+        });
+        cellUpdate.appendChild(buttonUpdate);
+        cellUpdate.appendChild(buttonSave);
+        cellDelete.appendChild(buttonDelete);
+        cellIndex.scope = "row";
+        row.appendChild(cellIndex);
+        row.appendChild(cellName);
+        row.appendChild(cellLastname);
+        row.appendChild(cellEmail);
+        row.appendChild(cellPhone);
+        row.appendChild(cellUpdate);
+        row.appendChild(cellDelete);
+
+        tbody.appendChild(row);
+      });
+      /*SPOSTARE NEL gestisciDOMStudente()
       const headerRow = document.createElement("tr");
       headerRow.innerHTML =
         "<th>Nome</th><th>Cognome</th><th>Presenza</th><th>Orario Ingresso</th><th>Orario Uscita</th><th>Voto</th>";
@@ -703,8 +771,102 @@ document.addEventListener("DOMContentLoaded", function () {
         row.appendChild(cellgrd);
 
         studentTable.appendChild(row);
+      }*/
+    }
+    function modStudentRow(id) {
+      const cellName = document.querySelector(`#student${id} td:nth-child(2)`);
+      const cellLastName = document.querySelector(
+        `#student${id} td:nth-child(3)`
+      );
+      const cellEmail = document.querySelector(`#student${id} td:nth-child(4)`);
+      const cellPhone = document.querySelector(`#student${id} td:nth-child(5)`);
+      const btnMod = document.querySelector(
+        `#student${id} td:nth-child(6) button[type="button"]:nth-child(1)`
+      );
+      const btnSave = document.querySelector(
+        `#student${id} td:nth-child(6) button[type="button"]:nth-child(2)`
+      );
+      if (btnMod) {
+        console.log("pulsante lo abbiamooo");
+      }
+      const contentName = cellName.textContent;
+      const contentLastName = cellLastName.textContent;
+      const contentEmail = cellEmail.textContent;
+      const contentPhone = cellPhone.textContent;
+
+      const inputName = document.createElement("input");
+      inputName.type = "text";
+      inputName.id = "fname";
+      inputName.name = "fname";
+      const inputLastName = document.createElement("input");
+      inputLastName.type = "text";
+      inputLastName.id = "flastname";
+      inputLastName.name = "flstname";
+      const inputEmail = document.createElement("input");
+      inputEmail.type = "email";
+      inputEmail.id = "femail";
+      inputEmail.name = "femail";
+      const inputPhone = document.createElement("input");
+      inputPhone.type = "tel";
+      inputPhone.id = "fphone";
+      inputPhone.name = "fphone";
+
+      if (inputName && inputLastName) {
+        inputName.value = contentName;
+        inputLastName.value = contentLastName;
+        inputEmail.value = contentEmail;
+        inputPhone.value = contentPhone;
+
+        cellName.innerHTML = "";
+        cellName.appendChild(inputName);
+        cellLastName.innerHTML = "";
+        cellLastName.appendChild(inputLastName);
+        cellEmail.innerHTML = "";
+        cellEmail.appendChild(inputEmail);
+        cellPhone.innerHTML = "";
+        cellPhone.appendChild(inputPhone);
       }
     }
+    function saveStudentRow(id, e) {
+      const idCorretto = id[id.length - 1];
+      console.log(idCorretto);
+      const cellName = document.querySelector(
+        `#student${id} td:nth-child(2) input`
+      );
+      const cellLastName = document.querySelector(
+        `#student${id} td:nth-child(3) input`
+      );
+      const cellEmail = document.querySelector(
+        `#student${id} td:nth-child(4) input`
+      );
+      const cellPhone = document.querySelector(
+        `#student${id} td:nth-child(5) input`
+      );
+      const btnMod = document.querySelector(
+        `#student${id} td:nth-child(6) button[type="button"]:nth-child(1)`
+      );
+      const btnSave = document.querySelector(
+        `#student${id} td:nth-child(6) button[type="button"]:nth-child(2)`
+      );
+      if (btnMod) {
+        console.log("pulsante lo abbiamooo");
+      }
+      const contentName = cellName.value;
+      const contentLastName = cellLastName.value;
+      const contentEmail = cellEmail.value;
+      const contentPhone = cellPhone.value;
+      console.log(contentLastName);
+      student.updateStudent({
+        studentId: idCorretto,
+        name: contentName,
+        lastName: contentLastName,
+        email: contentEmail,
+        phoneNumber: contentPhone,
+      });
+      populateStudentTable();
+      e.stopPropagation();
+    }
+    populateStudentTable();
   }
 });
 
