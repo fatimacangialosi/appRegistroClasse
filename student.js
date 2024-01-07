@@ -9,9 +9,12 @@ class Student {
   // Lista di tutti gli studenti
   //studentList = [];
 
-  createStudent(id, iname, lastName, email, phoneNumber) {
+  createStudent(iname, lastName, email, phoneNumber) {
     const newStudent = {
-      id: id, //Math.random().toString(16).slice(2) + Date.now().toString(16);
+      id:
+        "student" +
+        Math.random().toString(16).slice(2) +
+        Date.now().toString(16),
       name: iname, // Modifica questa linea
       lastName: lastName,
       email: email,

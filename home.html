@@ -91,15 +91,6 @@
         >
           Aggiungi materia +
         </button>
-        <button
-          type="button+"
-          class="btn btn-primary btn-lg"
-          data-toggle="modal"
-          data-target="#addStudentModal"
-          data-whatever="@mdo"
-        >
-          Aggiungi studente +
-        </button>
         <!--MODALE ADD MATERIA-->
         <div
           class="modal fade"
@@ -153,84 +144,6 @@
                   data-dismiss="modal"
                 >
                   Crea materia
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!--MODALE ADD STUDENTE-->
-        <div
-          class="modal fade"
-          id="addStudentModal"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">
-                  Aggiungi studente
-                </h5>
-                <button
-                  type="button+"
-                  class="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <form>
-                  <div class="form-group">
-                    <label for="student-name" class="col-form-label"
-                      >Nome</label
-                    >
-                    <input type="text" class="form-control" id="student-name" />
-                    <label for="student-lastName" class="col-form-label"
-                      >lastName</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="student-lastName"
-                    />
-                    <label for="student-email" class="col-form-label"
-                      >Email</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="student-email"
-                    />
-                    <label for="student-phoneNumber" class="col-form-label"
-                      >PhoneNumber</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="student-phoneNumber"
-                    />
-                  </div>
-                </form>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-dismiss="modal"
-                >
-                  Esci
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  id="btnCreateStudent"
-                  data-dismiss="modal"
-                >
-                  Crea studente
                 </button>
               </div>
             </div>
