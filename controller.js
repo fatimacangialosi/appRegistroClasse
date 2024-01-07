@@ -96,7 +96,7 @@ function createRegister(nameMatter) {
 }
 
 function createStudent(name, lastName, email, phoneNumber) {
-  student.createStudent(1, name, lastName, email, phoneNumber);
+  student.createStudent(name, lastName, email, phoneNumber);
   //localStorage.setItem("register", JSON.stringify(registers));
   //console.log(registers.length);
   //window.location.reload();
@@ -122,18 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
         createRegister(nameMatter);
       });
     }
-    function addNewStudentToApp() {
-      const btnCreateStudent = document.getElementById("btnCreateStudent");
-      btnCreateStudent.addEventListener("click", () => {
-        const nameS = document.getElementById("student-name").value;
-        const lastNameS = document.getElementById("student-lastName").value;
-        const emailS = document.getElementById("student-email").value;
-        const phoneNumberS = document.getElementById(
-          "student-phoneNumber"
-        ).value;
-        createStudent(nameS, lastNameS, emailS, phoneNumberS);
-      });
-    }
+
     function viewButtonMatter() {
       const divButtonMatter = document.getElementById("divButtonMatter");
       divButtonMatter.innerHTML = ""; // Clear existing content
@@ -160,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
       window.location.href="registro.html"
     }*/
     addNewMatterToRegister();
-    addNewStudentToApp();
+    //addNewStudentToApp();
     viewButtonMatter();
   }
 
@@ -866,6 +855,20 @@ document.addEventListener("DOMContentLoaded", function () {
       populateStudentTable();
       e.stopPropagation();
     }
+    function addNewStudentToApp() {
+      const btnCreateStudent = document.getElementById("btnCreateStudent");
+      btnCreateStudent.addEventListener("click", () => {
+        const nameS = document.getElementById("student-name").value;
+        const lastNameS = document.getElementById("student-lastName").value;
+        const emailS = document.getElementById("student-email").value;
+        const phoneNumberS = document.getElementById(
+          "student-phoneNumber"
+        ).value;
+        createStudent(nameS, lastNameS, emailS, phoneNumberS);
+        populateStudentTable();
+      });
+    }
+    addNewStudentToApp();
     populateStudentTable();
   }
 });
