@@ -30,7 +30,6 @@ const dummySchoolRecordData = {
   ],
   lessonList: [
     {
-      lessonId: "lesson1",
       lessonDate: "2024-01-03",
       attendances: [
         {
@@ -69,11 +68,7 @@ dummySchoolRecordData.gradeList.forEach((grade) => {
   );
 });
 dummySchoolRecordData.lessonList.forEach((lesson) => {
-  schoolRecordInstance.addLesson(
-    lesson.lessonId,
-    lesson.lessonDate,
-    lesson.lessonStudentList
-  );
+  schoolRecordInstance.addLesson(lesson.lessonDate, lesson.lessonStudentList);
   lesson.attendances.forEach((attendance) => {
     schoolRecordInstance.addAttendanceToLesson(
       lesson.lessonId,
@@ -178,13 +173,23 @@ document.addEventListener("DOMContentLoaded", function () {
       h2.innerHTML = "";
       h2.innerHTML += `${nameMatter}`;
     }
+    const btnAddLesson = document.querySelector(".btn-lesson");
+    btnAddLesson.addEventListener("click", () => {
+      var datepickerInput = document.getElementById("datepicker");
+      registers[0].addLesson(datepickerInput.value);
+      alert(`addLesson: ${datepickerInput.value}`);
+      populateRegisterTable(datepickerInput.value);
+    });
     // Funzione per inizializzare il datepicker
     function lessonDayDatePicker() {
       var datepickerInput = document.getElementById("datepicker");
       datepickerInput.valueAsDate = new Date();
-      populateRegisterTable(new Date());
+
+      populateRegisterTable(datepickerInput.value);
+
       datepickerInput.addEventListener("input", function () {
         console.log("Data cambiata manualmente:", datepickerInput.value);
+
         populateRegisterTable(datepickerInput.value);
       });
 
@@ -194,6 +199,7 @@ document.addEventListener("DOMContentLoaded", function () {
         var currentDate = new Date(datepickerInput.value);
         currentDate.setDate(currentDate.getDate() + 1);
         datepickerInput.valueAsDate = currentDate;
+
         populateRegisterTable(datepickerInput.value);
       });
 
@@ -202,6 +208,10 @@ document.addEventListener("DOMContentLoaded", function () {
         var currentDate = new Date(datepickerInput.value);
         currentDate.setDate(currentDate.getDate() - 1);
         datepickerInput.valueAsDate = currentDate;
+        var prova = registers[0].getLesson(datepickerInput.value);
+        console.log(prova);
+        console.log("datepickerInput.value: " + datepickerInput.value);
+        console.log(registers[0].getLesson(datepickerInput.value));
         populateRegisterTable(datepickerInput.value);
       });
     }
@@ -300,177 +310,196 @@ document.addEventListener("DOMContentLoaded", function () {
 
       //POPOLO PRIMA COLONNA TABLE
       tBodyReg.innerHTML = "";
-      const studentList = registers[0].getStudentList();
-      studentList.forEach((id, index) => {
-        const row = document.createElement("tr");
-        const cellStud = document.createElement("td");
-        const cellAtdnc = document.createElement("td");
-        const cellentry = document.createElement("td");
-        const cellexit = document.createElement("td");
-        const cellCmp = document.createElement("td");
-        const cellgrd = document.createElement("td");
-        const cellBtn = document.createElement("td");
+      if (registers[0].getLesson(lessonDayView)) {
+        const studentList = registers[0].getStudentList();
+        studentList.forEach((id, index) => {
+          const row = document.createElement("tr");
+          const cellStud = document.createElement("td");
+          const cellAtdnc = document.createElement("td");
+          const cellentry = document.createElement("td");
+          const cellexit = document.createElement("td");
+          const cellCmp = document.createElement("td");
+          const cellgrd = document.createElement("td");
+          const cellBtn = document.createElement("td");
 
-        const idStudentee = index + 1;
-        const stud = student.getStudent(`${++index}`);
-        console.log(stud);
-        if (stud) {
-          cellStud.innerHTML = stud.name + stud.lastName;
-          const checkboxPresenza = document.createElement("input");
-          checkboxPresenza.type = "checkbox";
-          checkboxPresenza.addEventListener("change", () => {
-            if (checkboxPresenza.checked == true) {
-              console.log("ifffff");
-              btnRowMod.style.display = "none";
-              btnRowSave.style.display = "block";
-              modifyRowStudent(checkboxPresenza, idStudentee);
-            } else {
-              //SEMBRA ENTRI SEMPRE NELL'IF IN OGNI CASO
-              alert("Presenza eliminato correttamente");
-              modifyRowStudent(checkboxPresenza, idStudentee);
-              checkboxCompito.checked = false;
-              //registers[0].dropAttendance();
-              console.log("elseee");
-            }
-            //addPsrRowStudent()
-          });
-          cellAtdnc.appendChild(checkboxPresenza);
-          const checkboxCompito = document.createElement("input");
-          checkboxCompito.type = "checkbox";
-          checkboxCompito.id = "cmp";
-          checkboxCompito.setAttribute("disabled", true);
-          checkboxCompito.addEventListener("change", () => {
-            //console.log("ckCompito.checked: "+checkboxPre)
-            if (checkboxCompito.checked == true) {
-              console.log("ifffff");
-              modifyRowStudent(checkboxCompito, idStudentee);
-              btnRowMod.style.display = "none";
-              btnRowSave.style.display = "block";
-            } else {
-              alert("Compito eliminato correttamente");
-              modifyRowStudent(checkboxCompito, idStudentee);
-              //registers[0].dropAttendance();
-              console.log("elseee");
-            }
-            //addPsrRowStudent()
-          });
-          cellCmp.appendChild(checkboxCompito);
-          const btnRowMod = document.createElement("button");
-          const btnRowSave = document.createElement("button");
-          btnRowMod.type = "button";
-          btnRowMod.class = "btn btn-primary btn-lg";
-          btnRowMod.innerText = "Modifica";
-          btnRowSave.type = "button";
-          btnRowSave.class = "btn btn-primary btn-lg";
-          btnRowSave.innerText = "Save";
-          btnRowMod.style.display = "none";
-          btnRowSave.style.display = "none";
-          btnRowMod.addEventListener("click", () => {
-            modifyRowStudent(btnRowMod, idStudentee);
-            checkboxPresenza.disabled = false;
-            checkboxCompito.disabled = false;
+          const idStudentee = index + 1;
+          const stud = student.getStudent(`${++index}`);
+          console.log(stud);
+          if (stud) {
+            cellStud.innerHTML = stud.name + stud.lastName;
+            const checkboxPresenza = document.createElement("input");
+            checkboxPresenza.type = "checkbox";
+            checkboxPresenza.addEventListener("change", () => {
+              if (checkboxPresenza.checked == true) {
+                console.log("ifffff");
+                btnRowMod.style.display = "none";
+                btnRowSave.style.display = "block";
+                modifyRowStudent(checkboxPresenza, idStudentee);
+              } else {
+                //SEMBRA ENTRI SEMPRE NELL'IF IN OGNI CASO
+                alert("Presenza eliminato correttamente");
+                modifyRowStudent(checkboxPresenza, idStudentee);
+                checkboxCompito.checked = false;
+                //registers[0].dropAttendance();
+                console.log("elseee");
+              }
+              //addPsrRowStudent()
+            });
+            cellAtdnc.appendChild(checkboxPresenza);
+            const checkboxCompito = document.createElement("input");
+            checkboxCompito.type = "checkbox";
+            checkboxCompito.id = "cmp";
+            checkboxCompito.setAttribute("disabled", true);
+            checkboxCompito.addEventListener("change", () => {
+              //console.log("ckCompito.checked: "+checkboxPre)
+              if (checkboxCompito.checked == true) {
+                console.log("ifffff");
+                modifyRowStudent(checkboxCompito, idStudentee);
+                btnRowMod.style.display = "none";
+                btnRowSave.style.display = "block";
+              } else {
+                alert("Compito eliminato correttamente");
+                modifyRowStudent(checkboxCompito, idStudentee);
+                //registers[0].dropAttendance();
+                console.log("elseee");
+              }
+              //addPsrRowStudent()
+            });
+            cellCmp.appendChild(checkboxCompito);
+            const btnRowMod = document.createElement("button");
+            const btnRowSave = document.createElement("button");
+            btnRowMod.type = "button";
+            btnRowMod.class = "btn btn-primary btn-lg";
+            btnRowMod.innerText = "Modifica";
+            btnRowSave.type = "button";
+            btnRowSave.class = "btn btn-primary btn-lg";
+            btnRowSave.innerText = "Save";
             btnRowMod.style.display = "none";
-            btnRowSave.style.display = "block";
-          });
+            btnRowSave.style.display = "none";
+            btnRowMod.addEventListener("click", () => {
+              modifyRowStudent(btnRowMod, idStudentee);
+              checkboxPresenza.disabled = false;
+              checkboxCompito.disabled = false;
+              btnRowMod.style.display = "none";
+              btnRowSave.style.display = "block";
+            });
 
-          btnRowSave.addEventListener("click", () => {
-            saveModRowStudent(btnRowSave, idStudentee);
-          });
-          cellBtn.appendChild(btnRowMod);
-          cellBtn.appendChild(btnRowSave);
-          row.appendChild(cellStud);
-          //row.appendChild(cellPsr);
-          row.appendChild(cellAtdnc);
-          row.appendChild(cellentry);
-          row.appendChild(cellexit);
-          row.appendChild(cellCmp);
-          row.appendChild(cellgrd);
-          row.appendChild(cellBtn);
-          tBodyReg.appendChild(row);
-          row.id = "student" + stud.id;
-        } else {
-          console.log("studentList del register terminato");
-        }
-      });
-      //POPOLO COLONNA ORARIO PRESENZE TABLE
-      const lessonList = registers[0].getLessonList();
-      console.log(lessonList);
-      //@@Devo cliclare a regime l'array lessonDay e vedere se c'è un giorno esistente come quello mostrato, se non c'è visualizzo vuoto (o l'alert, vediamo)
-      lessonList.forEach((lessonDay) => {
-        console.log(
-          "lessonDay.lessonDate: " +
-            lessonDay.lessonDate +
-            "\nlessonDayView: " +
-            lessonDayView
-        );
-        if (lessonDay.lessonDate == lessonDayView) {
-          lessonDay.attendances.forEach((elem) => {
-            const btnSave = document.querySelector(
-              `#${elem.studentId} td:nth-child(7) button[type="button"]`
-            );
-            const cellEntryDaModificare = document.querySelector(
-              `#${elem.studentId} td:nth-child(3)`
-            );
-            const cbPresenze = document.querySelector(
-              `#${elem.studentId} td:nth-child(2) input[type="checkbox"]`
-            );
-            const cbCmp = document.querySelector(
-              `#${elem.studentId} td:nth-child(5) input[type="checkbox"]`
-            );
-            if (cellEntryDaModificare && cbPresenze) {
-              // Ora puoi modificare il contenuto della cella come desiderato
-              btnSave.style.display = "block";
+            btnRowSave.addEventListener("click", () => {
+              saveModRowStudent(btnRowSave, idStudentee);
+            });
+            cellBtn.appendChild(btnRowMod);
+            cellBtn.appendChild(btnRowSave);
+            row.appendChild(cellStud);
+            //row.appendChild(cellPsr);
+            row.appendChild(cellAtdnc);
+            row.appendChild(cellentry);
+            row.appendChild(cellexit);
+            row.appendChild(cellCmp);
+            row.appendChild(cellgrd);
+            row.appendChild(cellBtn);
+            tBodyReg.appendChild(row);
+            row.id = "student" + stud.id;
+          } else {
+            console.log("studentList del register terminato");
+          }
+        });
+        //POPOLO COLONNA ORARIO PRESENZE TABLE
+        const lessonList = registers[0].getLessonList();
+        const btnAddLesson = document.querySelector(".btn-lesson");
+
+        console.log(lessonList);
+        //@@Devo cliclare a regime l'array lessonDay e vedere se c'è un giorno esistente come quello mostrato, se non c'è visualizzo vuoto (o l'alert, vediamo)
+        lessonList.forEach((lessonDay) => {
+          console.log(
+            "lessonDay.lessonDate: " +
+              lessonDay.lessonDate +
+              "\nlessonDayView: " +
+              lessonDayView
+          );
+          console.log(lessonDay.lessonDate == lessonDayView);
+
+          if (lessonDay.lessonDate == lessonDayView) {
+            //è presente una lezione nel giorno visualizzato
+            btnAddLesson.style.display = "none";
+            lessonDay.attendances.forEach((elem) => {
+              const btnSave = document.querySelector(
+                `#${elem.studentId} td:nth-child(7) button[type="button"]`
+              );
+              const cellEntryDaModificare = document.querySelector(
+                `#${elem.studentId} td:nth-child(3)`
+              );
+              const cbPresenze = document.querySelector(
+                `#${elem.studentId} td:nth-child(2) input[type="checkbox"]`
+              );
+              const cbCmp = document.querySelector(
+                `#${elem.studentId} td:nth-child(5) input[type="checkbox"]`
+              );
+              console.log("cellEntryDaModificare: " + cellEntryDaModificare);
+              console.log("cbPresenze: " + cbPresenze);
+              //cbPresenze.disabled = false;
               cbCmp.disabled = false;
-              console.log("eleme.entryTime: " + elem.entryTime);
-              if (elem.entryTime) {
-                cellEntryDaModificare.textContent = elem.entryTime;
-                cbPresenze.checked = true;
-                cbPresenze.disabled = true;
+              if (cellEntryDaModificare && cbPresenze) {
+                // Ora puoi modificare il contenuto della cella come desiderato
+                btnSave.style.display = "block";
+                console.log("eleme.entryTime: " + elem.entryTime);
+                if (elem.entryTime) {
+                  cellEntryDaModificare.textContent = elem.entryTime;
+                  cbPresenze.checked = true;
+                  cbPresenze.disabled = true;
+                }
+              } else {
+                console.error("Riga o cella non trovata con l'id specificato");
+              }
+              const cellEntryDaModificare2 = document.querySelector(
+                `#${elem.studentId} td:nth-child(4)`
+              );
+              if (cellEntryDaModificare2) {
+                // Ora puoi modificare il contenuto della cella come desiderato
+                cellEntryDaModificare2.textContent = elem.exitTime;
+              } else {
+                console.error("Riga o cella non trovata con l'id specificato");
+              }
+            });
+          } else {
+            if (btnAddLesson) {
+              btnAddLesson.style.display = "block";
+            }
+            /*cbPresenze.checked = false;
+          cbPresenze.disabled = true;
+          cbCmp.checked = false;
+          cbCmp.disabled = true;*/
+            console.log("non è il giorno correttooo");
+          }
+        });
+
+        //POPOLO COLONNA GRADE
+        const gradeDay = registers[0].getGradeList();
+        console.log(gradeDay);
+        gradeDay.forEach((grade) => {
+          if (grade.gradeDate == lessonDayView) {
+            const cellEntryDaModificare = document.querySelector(
+              `#${grade.studentId} td:nth-child(6)`
+            );
+            const cbCompito = document.querySelector(
+              `#${grade.studentId} td:nth-child(5) input[type="checkbox"]`
+            );
+            if (cellEntryDaModificare && cbCompito) {
+              // Ora puoi modificare il contenuto della cella come desiderato
+              console.log("grade.gradeValue: " + grade.gradeValue);
+              if (grade.gradeValue) {
+                cellEntryDaModificare.textContent = grade.gradeValue;
+                cbCompito.checked = true;
+                cbCompito.disabled = true;
               }
             } else {
               console.error("Riga o cella non trovata con l'id specificato");
             }
-            const cellEntryDaModificare2 = document.querySelector(
-              `#${elem.studentId} td:nth-child(4)`
-            );
-            if (cellEntryDaModificare2) {
-              // Ora puoi modificare il contenuto della cella come desiderato
-              cellEntryDaModificare2.textContent = elem.exitTime;
-            } else {
-              console.error("Riga o cella non trovata con l'id specificato");
-            }
-          });
-        } else {
-          console.log("non è il giorno correttooo");
-        }
-      });
-
-      //POPOLO COLONNA GRADE
-      const gradeDay = registers[0].getGradeList();
-      console.log(gradeDay);
-      gradeDay.forEach((grade) => {
-        if (grade.gradeDate == lessonDayView) {
-          const cellEntryDaModificare = document.querySelector(
-            `#${grade.studentId} td:nth-child(6)`
-          );
-          const cbCompito = document.querySelector(
-            `#${grade.studentId} td:nth-child(5) input[type="checkbox"]`
-          );
-          if (cellEntryDaModificare && cbCompito) {
-            // Ora puoi modificare il contenuto della cella come desiderato
-            console.log("grade.gradeValue: " + grade.gradeValue);
-            if (grade.gradeValue) {
-              cellEntryDaModificare.textContent = grade.gradeValue;
-              cbCompito.checked = true;
-              cbCompito.disabled = true;
-            }
           } else {
-            console.error("Riga o cella non trovata con l'id specificato");
+            console.log("non è il giorno correttooo");
           }
-        } else {
-          console.log("non è il giorno correttooo");
-        }
-      });
+        });
+      }
+
       /*for (var i = 0; i < students.length; i++) {
         const row = document.createElement("tr");
         const cellnm = document.createElement("td");

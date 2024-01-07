@@ -15,6 +15,16 @@ class SchoolRecord {
   getLessonList() {
     return this.lessonList;
   }
+  getLesson(lessonDate) {
+    let verify = false;
+    this.lessonList.forEach((elem) => {
+      console.log(elem.lessonDate);
+      if (elem.lessonDate == lessonDate) {
+        verify = true;
+      }
+    });
+    return verify;
+  }
   getGradeList() {
     return this.gradeList;
   }
@@ -36,17 +46,18 @@ class SchoolRecord {
   }
 
   addLesson(
-    lessonId = Math.random().toString(16).slice(2) + Date.now().toString(16),
+    //lessonId = Math.random().toString(16).slice(2) + Date.now().toString(16),
     lessonDate
     //lessonStudentList
   ) {
     const lesson = {
-      lessonId: lessonId,
+      //lessonId: lessonId,
       lessonDate: lessonDate,
       //lessonStudentList: lessonStudentList,
       attendances: [],
     };
     this.lessonList.push(lesson);
+    return lesson;
   }
   //1)////////////////////////////////////
   addAttendanceToLesson(lessonId, studentId, entryTime, exitTime) {
