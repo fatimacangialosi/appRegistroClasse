@@ -32,18 +32,37 @@ class Student {
   }
 
   updateStudent({ studentId, name, lastName, email, phoneNumber }) {
-    const studentIndex = this.studentList.forEach((student) => {
-      if (student.id === studentId) {
-        name ? (student.name = name) : (student.name = student.name);
-        lastName
-          ? (student.lastName = lastName)
-          : (student.lastName = student.lastName);
-        email ? (student.email = email) : (student.email = student.email);
-        phoneNumber
-          ? (student.phoneNumber = phoneNumber)
-          : (student.phoneNumber = student.phoneNumber);
-      }
-    });
+    //console.log("student.id: " + student.id);
+    console.log("studentId: " + studentId);
+    console.log("name: " + lastName);
+    const studentIndex = this.studentList.findIndex(
+      (student) => student.id === studentId
+    );
+    console.log(studentIndex);
+    if (studentIndex === 0) {
+      this.studentList[studentIndex].name = name;
+      this.studentList[studentIndex].lastName = lastName;
+      this.studentList[studentIndex].email = email;
+      this.studentList[studentIndex].phoneNumber = phoneNumber;
+      /*name
+        ? (this.studentList[studentIndex].name = name)
+        : (this.studentList[studentIndex].name =
+            this.studentList[studentIndex].name);
+      lastName
+        ? (this.studentList[studentIndex].lastName = lastName)
+        : (this.studentList[studentIndex].lastName =
+            this.studentList[studentIndex].lastName);
+      email
+        ? (this.studentList[studentIndex].email = email)
+        : (this.studentList[studentIndex].email =
+            this.studentList[studentIndex].email);
+      phoneNumber
+        ? (this.studentList[studentIndex].phoneNumber = phoneNumber)
+        : (this.studentList[studentIndex].phoneNumber =
+            this.studentList[studentIndex].phoneNumber);*/
+    } else {
+      console.log("non fa update student");
+    }
     /*studentIndex.iname = iname;
       studentIndex.lastName = lastName;
       studentIndex.email = email;
