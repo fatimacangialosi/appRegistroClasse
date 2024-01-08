@@ -94,7 +94,7 @@
         <button onclick="nextDay()">+</button>-->
       </div>
       <div class="row">
-        <div class="col-8">
+        <div class="col-12">
           <table class="table">
             <thead>
               <tr>
@@ -186,6 +186,8 @@
             </tr>
           </table>-->
         </div>
+      </div>
+      <div class="row">
         <div class="col-4">
           <aside>
             <form action="/action_page.php">
@@ -228,7 +230,7 @@
             </button>
           </div>
           <div class="modal-body mx-auto">
-            <table class="table">
+            <table class="table" id="tablemodal">
               <thead>
                 <tr>
                   <th scope="col">#</th>
@@ -275,7 +277,7 @@
             <button
               type="button"
               class="btn btn-primary"
-              id="btnCreateRegister"
+              id="btnAddStudent"
               data-dismiss="modal"
             >
               Inserisci studenti selezionati
