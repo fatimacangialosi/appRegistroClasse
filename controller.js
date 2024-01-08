@@ -1,97 +1,29 @@
 import SchoolRecord from "./register.js";
 import Student from "./student.js";
 
-/*let registers = localStorage.getItem("register")
-  ? JSON.parse(localStorage.getItem("register"))
-  : [];*/
-let registers = [];
+let registers = localStorage.getItem("register")
+  ? JSON.parse(localStorage.getItem("register")).map((data) =>
+      SchoolRecord.fromJSON(data)
+    )
+  : [];
+//let registers = [];
 const student = new Student();
 console.log(student.getStudents());
-// Dummy data in JSON format
-const dummySchoolRecordData = {
-  idRecord: "12345",
-  subjectName: "Math",
-  studentList: ["student1", "student2", "student3"],
-  gradeList: [
-    {
-      gradeId: "grade1",
-      gradeDate: "2024-01-03",
-      gradeValue: 90,
-      studentId: "student1",
-    },
-    /*{
-      gradeId: "grade2",
-      gradeDate: "2024-01-03",
-      gradeValue: 85,
-      studentId: "student2",
-    }*/
-    // Add more grades as needed
-    ,
-  ],
-  lessonList: [
-    {
-      lessonDate: "2024-01-03",
-      attendances: [
-        {
-          attendanceId: "attendance1",
-          studentId: "student1",
-          entryTime: "09:00",
-          exitTime: "12:00",
-        },
-        {
-          attendanceId: "attendance2",
-          studentId: "student2",
-          entryTime: "09:30",
-          exitTime: "12:00",
-        },
-        // Add more attendances as needed
-      ],
-    },
-    // Add more lessons as needed
-  ],
-};
+console.log(registers);
 
-// Create an instance of the SchoolRecord class with the dummy data
-const schoolRecordInstance = new SchoolRecord(
-  dummySchoolRecordData.idRecord,
-  dummySchoolRecordData.subjectName
-);
-
-// Add students, grades, and lessons to the instance
-schoolRecordInstance.addStudent(...dummySchoolRecordData.studentList);
-dummySchoolRecordData.gradeList.forEach((grade) => {
-  schoolRecordInstance.addGrade(
-    grade.gradeId,
-    grade.gradeDate,
-    grade.gradeValue,
-    grade.studentId
-  );
-});
-dummySchoolRecordData.lessonList.forEach((lesson) => {
-  schoolRecordInstance.addLesson(lesson.lessonDate, lesson.lessonStudentList);
-  lesson.attendances.forEach((attendance) => {
-    schoolRecordInstance.addAttendanceToLesson(
-      lesson.lessonId,
-      attendance.studentId,
-      attendance.entryTime,
-      attendance.exitTime
-    );
-  });
-});
-registers.push(schoolRecordInstance);
-//localStorage.setItem("register", JSON.stringify(registers));
-
-///@@@@@@@@@@@
 function connectMatterToRegister(nameMatter) {
   sessionStorage.setItem("nameMatter", nameMatter);
   window.location.href = "registro.html";
 }
 function createRegister(nameMatter) {
-  const newRegister = new SchoolRecord(1, nameMatter);
+  const newRegister = new SchoolRecord(nameMatter);
   registers.push(newRegister);
+  //console.log(newRegister.getGradeList());
+  //console.log(registers[0].getGradeList());
   localStorage.setItem("register", JSON.stringify(registers));
-  console.log(registers.length);
+  //console.log(registers.length);
   window.location.reload();
+
   return;
 }
 
@@ -155,7 +87,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function gestisciDOMRegistro() {
     const nameMatter = sessionStorage.getItem("nameMatter");
-
+    const register = registers.filter(
+      (elem) => elem.getSubjectName() == nameMatter
+    );
+    const indexReg = registers.indexOf(register[0]);
+    console.log(indexReg);
+    console.log(register[0]);
+    //console.log(registers[0].getSubjectName());
     //LE FUNZIONI PER IL POPOLAMENTO DELLA TABLE NEL REGISTRO VANNO QUI
     function populateNameMatter() {
       const h2 = document.getElementById("hmatter");
@@ -165,7 +103,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnAddLesson = document.querySelector(".btn-lesson");
     btnAddLesson.addEventListener("click", () => {
       var datepickerInput = document.getElementById("datepicker");
-      registers[0].addLesson(datepickerInput.value);
+      register[0].addLesson(datepickerInput.value);
+      registers[indexReg] = register[0];
+      localStorage.setItem("register", JSON.stringify(registers));
       alert(`addLesson: ${datepickerInput.value}`);
       populateRegisterTable(datepickerInput.value);
     });
@@ -197,10 +137,11 @@ document.addEventListener("DOMContentLoaded", function () {
         var currentDate = new Date(datepickerInput.value);
         currentDate.setDate(currentDate.getDate() - 1);
         datepickerInput.valueAsDate = currentDate;
-        var prova = registers[0].getLesson(datepickerInput.value);
+        var prova = register[0].getLesson(datepickerInput.value);
+        localStorage.setItem("register", JSON.stringify(registers));
         console.log(prova);
         console.log("datepickerInput.value: " + datepickerInput.value);
-        console.log(registers[0].getLesson(datepickerInput.value));
+        console.log(register[0].getLesson(datepickerInput.value));
         populateRegisterTable(datepickerInput.value);
       });
     }
@@ -245,53 +186,116 @@ document.addEventListener("DOMContentLoaded", function () {
       currentDate.setDate(currentDate.getDate() - 1);
       simpleDatepicker.setDate(currentDate);
     });*/
+    const btnOpenMod = document.getElementById("btnOpenMod");
+
+    if (btnOpenMod) {
+      btnOpenMod.addEventListener("click", () => {
+        populateAddStudentModal();
+      });
+    }
     function populateAddStudentModal() {
-      const btnOpenMod = document.getElementById("btnOpenMod");
-      if (btnOpenMod) {
-        btnOpenMod.addEventListener("click", () => {
-          const tbody = document.getElementById("tBodyAdd");
-          tbody.innerHTML = "";
-          student.getStudents().forEach((elem, index) => {
-            /*tbody.innerHTML += `<tr>
+      const listStdView = register[0].getStudentList();
+      console.log(listStdView);
+      const btnSaveMod = document.getElementById("btnAddStudent");
+      const tbody = document.getElementById("tBodyAdd");
+      tbody.innerHTML = "";
+      student.getStudents().forEach((elem, index) => {
+        /*tbody.innerHTML += `<tr>
         <th scope="row">${index}</th>
         <td>${elem.name}</td>
         <td>${elem.lastName}</td>
         <td>${elem.email}</td>
         <td>${elem.phoneNumber}</td>
       </tr>`;*/
-            const row = document.createElement("tr");
-            const cellIndex = document.createElement("th");
-            const cellName = document.createElement("td");
-            const cellLastname = document.createElement("td");
-            const cellEmail = document.createElement("td");
-            const cellPhone = document.createElement("td");
-            const cellSelect = document.createElement("td");
+        console.log(elem.id);
+        if (!listStdView.includes(elem.id)) {
+          console.log("non include");
+          const row = document.createElement("tr");
+          const cellIndex = document.createElement("td");
+          const cellName = document.createElement("td");
+          const cellLastname = document.createElement("td");
+          const cellEmail = document.createElement("td");
+          const cellPhone = document.createElement("td");
+          const cellSelect = document.createElement("td");
 
-            cellIndex.innerText = elem.name;
-            cellName.innerText = elem.name;
-            cellLastname.innerText = elem.lastName;
-            cellEmail.innerText = elem.email;
-            cellPhone.innerText = elem.phoneNumber;
-            const checkboxSeleziona = document.createElement("input");
-            checkboxSeleziona.type = "checkbox";
-            cellSelect.appendChild(checkboxSeleziona);
-            cellIndex.scope = "row";
-            row.appendChild(cellIndex);
-            row.appendChild(cellName);
-            row.appendChild(cellLastname);
-            row.appendChild(cellEmail);
-            row.appendChild(cellPhone);
-            row.appendChild(cellSelect);
+          row.id = elem.id;
+          cellIndex.innerText = "#";
+          cellName.innerText = elem.name;
+          cellLastname.innerText = elem.lastName;
+          cellEmail.innerText = elem.email;
+          cellPhone.innerText = elem.phoneNumber;
+          const checkboxSeleziona = document.createElement("input");
+          checkboxSeleziona.type = "checkbox";
+          cellSelect.appendChild(checkboxSeleziona);
+          cellIndex.scope = "row";
+          row.appendChild(cellIndex);
+          row.appendChild(cellName);
+          row.appendChild(cellLastname);
+          row.appendChild(cellEmail);
+          row.appendChild(cellPhone);
+          row.appendChild(cellSelect);
 
-            tbody.appendChild(row);
-          });
+          tbody.appendChild(row);
+        } /*else {
+          tbody.innerHTML = "";
+          const row = document.createElement("tr");
+          row.textContent = "Nessuno studente da visualizzare";
+          tbody.appendChild(row);
+        }*/
+      });
+
+      if (btnSaveMod) {
+        let idSelected = [];
+        btnSaveMod.addEventListener("click", () => {
+          const table = document.getElementById("tablemodal");
+          if (table) {
+            console.log("esiste table");
+          } else {
+            console.log("nn esiste table");
+          }
+          // Cicla attraverso le righe della tabella
+          for (let i = 1; i < table.rows.length; i++) {
+            const row = table.rows[i];
+            console.log(row.id);
+            const inputElement = row.getElementsByTagName("input");
+            for (let j = 0; j < inputElement.length; j++) {
+              const inputValue = inputElement[j].checked;
+              if (inputValue) {
+                //idSelected.push(row.id);
+                register[0].addStudent(row.id);
+              }
+            }
+          }
+          console.log(idSelected);
+          //const output = register[0].addStudent(...idSelected);
+          //console.log(output);
+          idSelected = [];
+
+          registers[indexReg] = register[0];
+          localStorage.setItem("register", JSON.stringify(registers));
+          idSelected = [];
+          var datepickerInput = document.getElementById("datepicker");
+
+          populateRegisterTable(datepickerInput.value);
+          //console.log(row.cells[7]);
+          /*const cellChk = row.cells[7];
+            const chk = cellChk.querySelector('input[type="checkbox"]');
+
+            if (chk) {
+              if (chk.checked == true) {
+                idSelected.push(row.id);
+                console.log(row.id);
+              }
+            }*/
         });
       }
     }
+    function addStudentToMatter() {}
     function populateRegisterTable(lessonDayView) {
       //const headerRow = document.createElement("tr");
       //headerRow.innerHTML =
       //"<th>Nome</th><th>Cognome</th><th>Presenza</th><th>Orario Ingresso</th><th>Orario Uscita</th><th>Voto</th>";
+      console.log("siamo in populate REGISTER TABLE");
       const tBodyReg = document.getElementById("tBodyReg");
       //tBodyAdd.appendChild(headerRow);
 
@@ -299,8 +303,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
       //POPOLO PRIMA COLONNA TABLE
       tBodyReg.innerHTML = "";
-      if (registers[0].getLesson(lessonDayView)) {
-        const studentList = registers[0].getStudentList();
+      if (register[0].getLesson(lessonDayView)) {
+        console.log("PRIMO IF");
+        const studentList = register[0].getStudentList();
         studentList.forEach((id, index) => {
           const row = document.createElement("tr");
           const cellStud = document.createElement("td");
@@ -311,7 +316,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const cellgrd = document.createElement("td");
           const cellBtn = document.createElement("td");
 
-          const idStudentee = index + 1;
+          //const idStudentee = index + 1;
           const stud = student.getStudent(id);
           console.log(stud);
           if (stud) {
@@ -322,12 +327,12 @@ document.addEventListener("DOMContentLoaded", function () {
               if (checkboxPresenza.checked == true) {
                 console.log("ifffff");
                 btnRowMod.style.display = "none";
-                btnRowSave.style.display = "block";
-                modifyRowStudent(checkboxPresenza, idStudentee);
+                btnRowSaveAdd.style.display = "block";
+                modifyRowStudent(checkboxPresenza, id);
               } else {
                 //SEMBRA ENTRI SEMPRE NELL'IF IN OGNI CASO
                 alert("Presenza eliminato correttamente");
-                modifyRowStudent(checkboxPresenza, idStudentee);
+                modifyRowStudent(checkboxPresenza, id);
                 checkboxCompito.checked = false;
                 //registers[0].dropAttendance();
                 console.log("elseee");
@@ -343,12 +348,12 @@ document.addEventListener("DOMContentLoaded", function () {
               //console.log("ckCompito.checked: "+checkboxPre)
               if (checkboxCompito.checked == true) {
                 console.log("ifffff");
-                modifyRowStudent(checkboxCompito, idStudentee);
+                modifyRowStudent(checkboxCompito, id);
                 btnRowMod.style.display = "none";
-                btnRowSave.style.display = "block";
+                btnRowSaveAdd.style.display = "block";
               } else {
                 alert("Compito eliminato correttamente");
-                modifyRowStudent(checkboxCompito, idStudentee);
+                modifyRowStudent(checkboxCompito, id);
                 //registers[0].dropAttendance();
                 console.log("elseee");
               }
@@ -356,28 +361,26 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             cellCmp.appendChild(checkboxCompito);
             const btnRowMod = document.createElement("button");
-            const btnRowSave = document.createElement("button");
+            const btnRowSaveMod = document.createElement("button");
+            const btnRowSaveAdd = document.createElement("button");
             btnRowMod.type = "button";
             btnRowMod.className = "btn btn-primary btn-lg";
             btnRowMod.innerText = "Modifica";
-            btnRowSave.type = "button";
-            btnRowSave.className = "btn btn-primary btn-lg";
-            btnRowSave.innerText = "Save";
+            btnRowSaveMod.type = "button";
+            btnRowSaveMod.className = "btn btn-primary btn-lg";
+            btnRowSaveMod.innerText = "Save";
+            btnRowSaveMod.id = "btn-savemod";
+            btnRowSaveAdd.type = "button";
+            btnRowSaveAdd.className = "btn btn-primary btn-lg";
+            btnRowSaveAdd.innerText = "Save";
+            btnRowSaveAdd.id = "btn-saveadd";
             btnRowMod.style.display = "none";
-            btnRowSave.style.display = "none";
-            btnRowMod.addEventListener("click", () => {
-              modifyRowStudent(btnRowMod, idStudentee);
-              checkboxPresenza.disabled = false;
-              checkboxCompito.disabled = false;
-              btnRowMod.style.display = "none";
-              btnRowSave.style.display = "block";
-            });
+            btnRowSaveMod.style.display = "none";
+            btnRowSaveAdd.style.display = "none";
 
-            btnRowSave.addEventListener("click", () => {
-              saveModRowStudent(btnRowSave, idStudentee);
-            });
             cellBtn.appendChild(btnRowMod);
-            cellBtn.appendChild(btnRowSave);
+            cellBtn.appendChild(btnRowSaveMod);
+            cellBtn.appendChild(btnRowSaveAdd);
             row.appendChild(cellStud);
             //row.appendChild(cellPsr);
             row.appendChild(cellAtdnc);
@@ -388,12 +391,26 @@ document.addEventListener("DOMContentLoaded", function () {
             row.appendChild(cellBtn);
             tBodyReg.appendChild(row);
             row.id = stud.id;
+            btnRowMod.addEventListener("click", () => {
+              modifyRowStudent(btnRowMod, id);
+              checkboxPresenza.disabled = false;
+              checkboxCompito.disabled = false;
+              btnRowMod.style.display = "none";
+              btnRowSaveMod.style.display = "block";
+            });
+
+            btnRowSaveMod.addEventListener("click", () => {
+              saveModRowStudent(btnRowSaveMod, id, lessonDayView);
+            });
+            btnRowSaveAdd.addEventListener("click", () => {
+              saveModRowStudent(btnRowSaveAdd, id, lessonDayView);
+            });
           } else {
             console.log("studentList del register terminato");
           }
         });
         //POPOLO COLONNA ORARIO PRESENZE TABLE
-        const lessonList = registers[0].getLessonList();
+        const lessonList = register[0].getLessonList();
         const btnAddLesson = document.querySelector(".btn-lesson");
 
         console.log(lessonList);
@@ -462,7 +479,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         //POPOLO COLONNA GRADE
-        const gradeDay = registers[0].getGradeList();
+        const gradeDay = register[0].getGradeList();
         console.log(gradeDay);
         gradeDay.forEach((grade) => {
           if (grade.gradeDate == lessonDayView) {
@@ -487,6 +504,9 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("non è il giorno correttooo");
           }
         });
+      } else {
+        const btnAddLesson = document.querySelector(".btn-lesson");
+        btnAddLesson.style.display = "block";
       }
 
       /*for (var i = 0; i < students.length; i++) {
@@ -532,16 +552,16 @@ document.addEventListener("DOMContentLoaded", function () {
     function modifyRowStudent(button, id) {
       console.log(button.type);
       const ckPsr = document.querySelector(
-        `#student${id} td:nth-child(2) input[type="checkbox"]`
+        `#${id} td:nth-child(2) input[type="checkbox"]`
       );
-      const cellEntry = document.querySelector(`#student${id} td:nth-child(3)`);
-      const cellExit = document.querySelector(`#student${id} td:nth-child(4)`);
+      const cellEntry = document.querySelector(`#${id} td:nth-child(3)`);
+      const cellExit = document.querySelector(`#${id} td:nth-child(4)`);
       const ckCmp = document.querySelector(
-        `#student${id} td:nth-child(5) input[type="checkbox"]`
+        `#${id} td:nth-child(5) input[type="checkbox"]`
       );
-      const cellGrd = document.querySelector(`#student${id} td:nth-child(6)`);
+      const cellGrd = document.querySelector(`#${id} td:nth-child(6)`);
       const btnMod = document.querySelector(
-        `#student${id} td:nth-child(7) button[type="button"]`
+        `#${id} td:nth-child(7) button[type="button"]`
       );
       const contentEntry = cellEntry.textContent;
       const contentExit = cellExit.textContent;
@@ -622,26 +642,109 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
     }
-    function saveModRowStudent(button, id) {
+    function saveModRowStudent(button, id, lessonDayView) {
       const ckPsr = document.querySelector(
-        `#student${id} td:nth-child(2) input[type="checkbox"]`
+        `#${id} td:nth-child(2) input[type="checkbox"]`
       );
-      const cellEntry = document.querySelector(`#student${id} td:nth-child(3)`);
-      const cellExit = document.querySelector(`#student${id} td:nth-child(4)`);
+      /*const cellEntry = document
+        .querySelector(`#${id} td:nth-child(3)`)
+        .querySelectorAll("*")[0].tagName;
+      const cellExit = document
+        .querySelector(`#${id} td:nth-child(4)`)
+        .querySelectorAll("*")[0].tagName;
+      const cellExit2 = document.querySelector(
+        `#${id} td:nth-child(4) input[type="time"]`
+      );*/
       const ckCmp = document.querySelector(
-        `#student${id} td:nth-child(5) input[type="checkbox"]`
+        `#${id} td:nth-child(5) input[type="checkbox"]`
       );
-      const cellGrd = document.querySelector(`#student${id} td:nth-child(6)`);
+      const cellGrd = document.querySelector(
+        `#${id} td:nth-child(6) input[type="number"]`
+      );
       const btnMod = document.querySelector(
-        `#student${id} td:nth-child(7) button[type="button"]`
+        `#${id} td:nth-child(7) button[type="button"]`
       );
-      const contentEntry = cellEntry.textContent;
-      const contentExit = cellExit.textContent;
+      //console.log(cellEntry);
+      /*for (const child of cellEntry) {
+        console.log(child.tagName);
+      }*/
 
-      if (ckPsr.checked == true) {
+      //const contentEntry = cellEntry.textContent;
+      //const contentExit = cellExit.value;
+      console.log("saveModRowStudent");
+      if (button.id == "btn-savemod") {
+        if (ckPsr.checked == true && ckCmp.checked == true) {
+          const cEntry = document.querySelector(
+            `#${id} td:nth-child(3) input[type="time"]`
+          );
+          const cExit = document.querySelector(
+            `#${id} td:nth-child(4) input[type="time"]`
+          );
+          const cGrade = document.querySelector(
+            `#${id} td:nth-child(6) input[type="number"]`
+          );
+          const contentEntry = cExit.value;
+          const contentExit = cEntry.value;
+          const contentGrade = cGrade.value;
+
+          console.log(contentEntry);
+          if (contentEntry != "" && contentGrade != "") {
+            /*register[0].updateAttendance(
+              lessonDayView,
+              id,
+              contentEntry,
+              contentExit
+            );*/
+            alert("dovrebbe aggiornare ATTENDANCE e GRADE");
+            //@@@@@@@@@@@@@@@@@@@@@@@@@@AGGIUNGERE FUNZIONE PER MODIFICARE GRADE
+            //register[0].addGrade(lessonDayView, contentGrade, id);
+          } else {
+            console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+          }
+        } else if (ckPsr.checked == true) {
+          /*register[0].updateAttendance(
+            lessonDayView,
+            id,
+            contentEntry,
+            contentExit
+          );*/
+          alert("dovrebbe aggiornare GRADE");
+          //@@@@@@@@@@@@@@@@òAGGIUNGERE QUI DROP GRADE
+        } else if (ckPsr.checked == false && ckCmp.checked == false) {
+          alert("dovrebbe rimuove ATTENDANCES e GRADE");
+          //@@@@@@@@@@@@@@@AGGIUNGERE DROP GRADE E DROP ATTENDANCE
+        } else if (ckPsr.checked == false && ckCmp.checked == true) {
+          alert("dovrebbe rimuovere ATTENDANCE e FORZATAMENTE GRADE");
+        }
+      } else if (button.id == "btn-saveadd") {
+        if (ckPsr.checked == true && ckCmp.checked == false) {
+          const cEntry = document.querySelector(
+            `#${id} td:nth-child(3) input[type="time"]`
+          );
+          const cExit = document.querySelector(
+            `#${id} td:nth-child(4) input[type="time"]`
+          );
+          const contentEntry = cEntry.value;
+          const contentExit = cExit.value;
+          register[0].addAttendanceToLesson(
+            lessonDayView,
+            id,
+            contentEntry,
+            contentExit
+          );
+        } else if (ckPsr.checked == true && ckCmp.checked == true) {
+          const cGrade = document.querySelector(
+            `#${id} td:nth-child(6) input[type="number"]`
+          );
+          const contentGrade = cGrade.value;
+          register[0].addGrade(lessonDayView, contentGrade, id);
+        }
       }
+      registers[indexReg] = register[0];
+      localStorage.setItem("register", JSON.stringify(registers));
+      populateRegisterTable(lessonDayView);
     }
-    populateAddStudentModal();
+    //populateAddStudentModal();
     populateNameMatter();
   }
   function gestisciDOMStudenti() {

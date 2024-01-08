@@ -1,12 +1,24 @@
 //import student from "./controller";
 
 class SchoolRecord {
-  constructor(idRecord, subjectName) {
-    this.idRecord = idRecord;
+  constructor(subjectName) {
+    this.idRecord =
+      "register" +
+      Math.random().toString(16).slice(2) +
+      Date.now().toString(16);
     this.subjectName = subjectName;
     this.studentList = [];
     this.gradeList = [];
     this.lessonList = [];
+  }
+  static fromJSON(data) {
+    const newRecord = new SchoolRecord(data.subjectName);
+    newRecord.idRecord = data.idRecord;
+    newRecord.studentList = data.studentList;
+    newRecord.gradeList = data.gradeList;
+    newRecord.lessonList = data.lessonList;
+
+    return newRecord;
   }
 
   getStudentList() {
@@ -18,7 +30,7 @@ class SchoolRecord {
   getLesson(lessonDate) {
     let verify = false;
     this.lessonList.forEach((elem) => {
-      console.log(elem.lessonDate);
+      console.log(elem.lessonDate + lessonDate);
       if (elem.lessonDate == lessonDate) {
         verify = true;
       }
@@ -28,16 +40,24 @@ class SchoolRecord {
   getGradeList() {
     return this.gradeList;
   }
+  getSubjectName() {
+    return this.subjectName;
+  }
   //attendances;
   addStudent(...studentId) {
+    console.log(...studentId);
+    console.log(studentId);
     studentId.forEach((elem) => {
       this.studentList.push(elem);
+      console.log(elem);
     });
+    return this.studentList;
   }
 
-  addGrade(gradeId, gradeDate, gradeValue, studentId) {
+  addGrade(gradeDate, gradeValue, studentId) {
     const grade = {
-      gradeId: Math.random().toString(16).slice(2) + Date.now().toString(16),
+      gradeId:
+        "grade" + Math.random().toString(16).slice(2) + Date.now().toString(16),
       gradeDate: gradeDate,
       gradeValue: gradeValue,
       studentId: studentId,
@@ -60,7 +80,7 @@ class SchoolRecord {
     return lesson;
   }
   //1)////////////////////////////////////
-  addAttendanceToLesson(lessonId, studentId, entryTime, exitTime) {
+  addAttendanceToLesson(lessonDate, studentId, entryTime, exitTime) {
     const attendance = {
       attendanceId:
         Math.random().toString(16).slice(2) + Date.now().toString(16),
@@ -69,10 +89,10 @@ class SchoolRecord {
       entryTime: entryTime,
       exitTime: exitTime,
     };
-    console.log("LESSON ID: " + lessonId);
+    console.log("LESSON DATE: " + lessonDate);
     let controllo = true;
     for (let i = 0; i < this.lessonList.length; i++) {
-      if (this.lessonList[i].lessonId == lessonId) {
+      if (this.lessonList[i].lessonDate == lessonDate) {
         const lesson = this.lessonList[i];
         for (let j = 0; j < lesson.attendances.length; j++) {
           const attendance = lesson.attendances[j];
@@ -111,7 +131,7 @@ class SchoolRecord {
     }
   }
   /////////////////////////////////////////
-  updateAttendence(lessonId, studentId, entryTime, exitTime) {
+  updateAttendance(lessonId, studentId, entryTime, exitTime) {
     /*const attendances = {
     lessonId: lessonId,
     studentId: studentId,
