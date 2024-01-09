@@ -65,6 +65,29 @@ class SchoolRecord {
     this.gradeList.push(grade);
   }
 
+  updateGrade(gradeDate, gradeValue, studentId) {
+    const gradeListUp = this.gradeList.filter((gr) => {
+      return !(gr.gradeDate === gradeDate && gr.studentId === studentId);
+    });
+    const gradeUp = {
+      gradeId:
+        "grade" + Math.random().toString(16).slice(2) + Date.now().toString(16),
+      gradeDate: gradeDate,
+      gradeValue: gradeValue,
+      studentId: studentId,
+    };
+    gradeListUp.push(gradeUp);
+    this.gradeList = gradeListUp;
+    return gradeUp;
+  }
+
+  dropGrade(gradeDate, studentId) {
+    const newgradeList = this.gradeList.filter((gr) => {
+      return !(gr.gradeDate === gradeDate && gr.studentId === studentId);
+    });
+    this.gradeList = newgradeList;
+  }
+
   addLesson(
     //lessonId = Math.random().toString(16).slice(2) + Date.now().toString(16),
     lessonDate
@@ -115,6 +138,37 @@ class SchoolRecord {
       }
     }
   }
+  dropAttendance(lessonDate, studentId) {
+    alert("@@@@@@@@@@@@@@");
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@drop");
+    const newLessonList = this.lessonList.map((lesson) => {
+      if (lesson.lessonDate === lessonDate) {
+        const newAttendaces = lesson.attendances.filter(
+          (attendance) => attendance.studentId !== studentId
+        );
+        console.log(newAttendaces);
+        return { ...lesson, attendances: newAttendaces };
+      }
+      return lesson;
+    });
+
+    this.lessonList = newLessonList;
+  }
+  /*const newLessonList = this.lessonList.map((lesson) => {
+      if (lesson.lessonDate === lessonDate) {
+        const newAttendances = lesson.attendances.filter(
+          (attendance) => attendance.studentId !== studentId
+        );
+  
+        // Restituisci una nuova copia della lezione con le presenze aggiornate
+        return {
+          ...lesson,
+          attendances: newAttendances,
+        };
+      }
+      return lesson;
+    });*/
+
   //////////////////////////////////////////////////
   showAttendanceToLesson(lessonId, studentId, entryTime, exitTime) {
     for (let i = 0; i < lessons.length; i++) {
@@ -131,14 +185,51 @@ class SchoolRecord {
     }
   }
   /////////////////////////////////////////
-  updateAttendance(lessonId, studentId, entryTime, exitTime) {
-    /*const attendances = {
-    lessonId: lessonId,
-    studentId: studentId,
-    entryTime: entryTime,
-    exitTime: exitTime,
-  };*/
-    for (i = 0; i < this.lessonList.length; i++) {
+  updateAttendance(lessonD, studId, entryT, exitT) {
+    const attendances = {
+      lessonId: Math.random().toString(16).slice(2) + Date.now().toString(16),
+      studentId: studId,
+      entryTime: entryT,
+      exitTime: exitT,
+    };
+    const newLessonList = this.lessonList.map((lesson) => {
+      if (lesson.lessonDate === lessonD) {
+        const updatedAttendances = lesson.attendances.map((attendance) => {
+          if (attendance.studentId === studId) {
+            // Crea una nuova copia dell'attendance con i nuovi dati
+            return {
+              ...attendance,
+              entryTime: entryT,
+              exitTime: exitT,
+            };
+          }
+          return attendance;
+        });
+
+        // Crea una nuova copia della lezione con le presenze aggiornate
+        return {
+          ...lesson,
+          attendances: updatedAttendances,
+        };
+      }
+      return lesson;
+    });
+
+    // Restituisci una nuova istanza della classe con la lista di lezioni aggiornata
+    //return new YourClassName(newLessonList);
+
+    /*const newLessonList2 = JSON.parse(JSON.stringify(this.lessonList)).map(
+      ({ attendances, lessonDate }) => {
+        if (lessonDate === lessonD) {*/
+
+    this.lessonList = newLessonList;
+    //this.addAttendanceToLesson(lessonDate, studentId, entryT, exitT);
+    /*.map(({ entryTime, exitTime, ...atted }) => ({
+        ...atted,
+        entryTime: entryT,
+        exitTime: exitT,
+      }))*/ console.log(newLessonList);
+    /*for (i = 0; i < this.lessonList.length; i++) {
       if (this.lessons[i] == lessonId) {
         this.lessons[i].attendances.array.forEach((element) => {
           if (element.studentId == studentId) {
@@ -149,26 +240,15 @@ class SchoolRecord {
         //this.lessons[i].attendance.(attendences);
       }
       return attendences;
-    }
+    }*/
   }
   //////////////////////////////
-  dropAttendance(lessonId, studentId) {
-    /*const attendances = {
-    lessonId: lessonId,
-    studentId: studentId,
-    entryTime: entryTime,
-    exitTime: exitTime,
-  };*/
-    for (i = 0; i < this.lessonList.length; i++) {
-      if (this.lessonList[i].lessonId == lessonId) {
-        for (j = 0; j < this.lessonList[i].attendance.length; j++) {
-          if (this.lessonList[i].attendance[j].studentId == studentId) {
-            this.lessonList[i].attendance.splice(j, 1);
-            return;
-          } else return;
-        }
-      }
-    }
+
+  dropGrade(gradeDate, studentId) {
+    const newGradeList = this.gradeList.filter((gr) => {
+      return !(gr.gradeDate === gradeDate && gr.studentId === studentId);
+    });
+    this.gradeList = newGradeList;
   }
 }
 
