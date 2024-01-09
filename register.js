@@ -28,7 +28,6 @@ class SchoolRecord {
   getLesson(lessonDate) {
     let verify = false;
     this.lessonList.forEach((elem) => {
-      console.log(elem.lessonDate + lessonDate);
       if (elem.lessonDate == lessonDate) {
         verify = true;
       }
@@ -43,11 +42,8 @@ class SchoolRecord {
   }
   //attendances;
   addStudent(...studentId) {
-    console.log(...studentId);
-    console.log(studentId);
     studentId.forEach((elem) => {
       this.studentList.push(elem);
-      console.log(elem);
     });
     return this.studentList;
   }
@@ -87,7 +83,6 @@ class SchoolRecord {
       entryTime: entryTime,
       exitTime: exitTime,
     };
-    console.log("LESSON DATE: " + lessonDate);
     let controllo = true;
     for (let i = 0; i < this.lessonList.length; i++) {
       if (this.lessonList[i].lessonDate == lessonDate) {
@@ -100,7 +95,6 @@ class SchoolRecord {
         }
         if (controllo) {
           lesson.attendances.push(attendance);
-          console.log(`Presenza registrata per lo studente ${studentId} `);
           return;
         } else {
           console.log(
@@ -186,13 +180,18 @@ class SchoolRecord {
         const newAttendaces = lesson.attendances.filter(
           (attendance) => attendance.studentId !== studentId
         );
-        console.log(newAttendaces);
         return { ...lesson, attendances: newAttendaces };
       }
       return lesson;
     });
 
     this.lessonList = newLessonList;
+  }
+  dropStudent(...studentId) {
+    const newStudentList = this.studentList.filter((student) => {
+      return !studentId.includes(student);
+    });
+    this.studentList = newStudentList;
   }
 }
 

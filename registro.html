@@ -109,6 +109,15 @@
                   >
                     +
                   </button>
+                  <button
+                    type="button"
+                    data-toggle="modal"
+                    href="#addSModal"
+                    class="btn btn-primary btn-lg"
+                    id="btnOpenModDel"
+                  >
+                    -
+                  </button>
                 </th>
                 <th scope="col">Presenza</th>
                 <th scope="col">Orario Entrata</th>
@@ -217,9 +226,7 @@
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">
-              Aggiungi studente
-            </h5>
+            <h5 class="modal-title" id="titleModal"></h5>
             <button
               type="button+"
               class="close"
@@ -241,29 +248,7 @@
                   <th scope="col">Select</th>
                 </tr>
               </thead>
-              <tbody id="tBodyAdd">
-                <!--<tr>
-                  <th scope="row">1</th>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                  <td>328101556</td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>Jacob</td>
-                  <td>Thornton</td>
-                  <td>@fat</td>
-                  <td>328101556</td>
-                </tr>
-                <tr>
-                  <th scope="row">3</th>
-                  <td>Larry</td>
-                  <td>the Bird</td>
-                  <td>@twitter</td>
-                  <td>328101556</td>
-                </tr>-->
-              </tbody>
+              <tbody id="tBodyAdd"></tbody>
             </table>
           </div>
           <div class="modal-footer">
@@ -279,9 +264,7 @@
               class="btn btn-primary"
               id="btnAddStudent"
               data-dismiss="modal"
-            >
-              Inserisci studenti selezionati
-            </button>
+            ></button>
           </div>
         </div>
       </div>
