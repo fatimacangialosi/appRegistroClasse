@@ -40,6 +40,11 @@ class SchoolRecord {
   getSubjectName() {
     return this.subjectName;
   }
+  getArgumentLesson(lessonDate) {
+    return this.lessonList.filter((lesson) => {
+      lesson.lessonDate = lessonDate;
+    })[0].lessonArgument;
+  }
   //attendances;
   addStudent(...studentId) {
     studentId.forEach((elem) => {
@@ -59,15 +64,10 @@ class SchoolRecord {
     this.gradeList.push(grade);
   }
 
-  addLesson(
-    //lessonId = Math.random().toString(16).slice(2) + Date.now().toString(16),
-    lessonDate
-    //lessonStudentList
-  ) {
+  addLesson(lessonDate, lessonArgument = "Argomento del giorno") {
     const lesson = {
-      //lessonId: lessonId,
       lessonDate: lessonDate,
-      //lessonStudentList: lessonStudentList,
+      lessonArgument: lessonArgument,
       attendances: [],
     };
     this.lessonList.push(lesson);
@@ -106,6 +106,21 @@ class SchoolRecord {
         console.log("Non ci siamo");
       }
     }
+  }
+
+  addArgumentToLesson(lessonDate, argument) {
+    console.log(argument);
+    const newLessonList = this.lessonList.map((lesson) => {
+      if (lesson.lessonDate === lessonDate) {
+        return {
+          ...lesson,
+          lessonArgument: argument,
+        };
+      }
+      return lesson;
+    });
+    this.lessonList = newLessonList;
+    console.log(this.lessonList);
   }
 
   //////////////////////////////////////////////////????
