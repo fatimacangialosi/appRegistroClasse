@@ -187,16 +187,61 @@ document.addEventListener("DOMContentLoaded", function () {
       simpleDatepicker.setDate(currentDate);
     });*/
     const btnOpenMod = document.getElementById("btnOpenMod");
+    const btnSaveMod = document.getElementById("btnAddStudent");
 
     if (btnOpenMod) {
       btnOpenMod.addEventListener("click", () => {
         populateAddStudentModal();
       });
     }
+    if (btnSaveMod) {
+      let idSelected = [];
+      btnSaveMod.addEventListener("click", () => {
+        const table = document.getElementById("tablemodal");
+        if (table) {
+          console.log("esiste table");
+        } else {
+          console.log("nn esiste table");
+        }
+        // Cicla attraverso le righe della tabella
+        for (let i = 1; i < table.rows.length; i++) {
+          const row = table.rows[i];
+          console.log(row.id);
+          const inputElement = row.getElementsByTagName("input");
+          for (let j = 0; j < inputElement.length; j++) {
+            const inputValue = inputElement[j].checked;
+            if (inputValue) {
+              idSelected.push(row.id);
+              //register[0].addStudent(row.id);
+            }
+          }
+        }
+        console.log(idSelected);
+        const output = register[0].addStudent(...idSelected);
+        //console.log(output);
+        //idSelected = [];
+
+        registers[indexReg] = register[0];
+        localStorage.setItem("register", JSON.stringify(registers));
+        idSelected = [];
+        var datepickerInput = document.getElementById("datepicker");
+
+        populateRegisterTable(datepickerInput.value);
+        //console.log(row.cells[7]);
+        /*const cellChk = row.cells[7];
+          const chk = cellChk.querySelector('input[type="checkbox"]');
+
+          if (chk) {
+            if (chk.checked == true) {
+              idSelected.push(row.id);
+              console.log(row.id);
+            }
+          }*/
+      });
+    }
     function populateAddStudentModal() {
       const listStdView = register[0].getStudentList();
       console.log(listStdView);
-      const btnSaveMod = document.getElementById("btnAddStudent");
       const tbody = document.getElementById("tBodyAdd");
       tbody.innerHTML = "";
       student.getStudents().forEach((elem, index) => {
@@ -243,52 +288,6 @@ document.addEventListener("DOMContentLoaded", function () {
           tbody.appendChild(row);
         }*/
       });
-
-      if (btnSaveMod) {
-        let idSelected = [];
-        btnSaveMod.addEventListener("click", () => {
-          const table = document.getElementById("tablemodal");
-          if (table) {
-            console.log("esiste table");
-          } else {
-            console.log("nn esiste table");
-          }
-          // Cicla attraverso le righe della tabella
-          for (let i = 1; i < table.rows.length; i++) {
-            const row = table.rows[i];
-            console.log(row.id);
-            const inputElement = row.getElementsByTagName("input");
-            for (let j = 0; j < inputElement.length; j++) {
-              const inputValue = inputElement[j].checked;
-              if (inputValue) {
-                //idSelected.push(row.id);
-                register[0].addStudent(row.id);
-              }
-            }
-          }
-          console.log(idSelected);
-          //const output = register[0].addStudent(...idSelected);
-          //console.log(output);
-          idSelected = [];
-
-          registers[indexReg] = register[0];
-          localStorage.setItem("register", JSON.stringify(registers));
-          idSelected = [];
-          var datepickerInput = document.getElementById("datepicker");
-
-          populateRegisterTable(datepickerInput.value);
-          //console.log(row.cells[7]);
-          /*const cellChk = row.cells[7];
-            const chk = cellChk.querySelector('input[type="checkbox"]');
-
-            if (chk) {
-              if (chk.checked == true) {
-                idSelected.push(row.id);
-                console.log(row.id);
-              }
-            }*/
-        });
-      }
     }
     function addStudentToMatter() {}
     function populateRegisterTable(lessonDayView) {
@@ -468,7 +467,10 @@ document.addEventListener("DOMContentLoaded", function () {
             });
           } else {
             if (btnAddLesson) {
-              btnAddLesson.style.display = "block";
+              console.log("blocchiamo bottone");
+              btnAddLesson.style.display == "block"
+                ? (btnAddLesson.style.display = "block")
+                : (btnAddLesson.style.display = "none");
             }
             /*cbPresenze.checked = false;
           cbPresenze.disabled = true;
@@ -506,7 +508,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       } else {
         const btnAddLesson = document.querySelector(".btn-lesson");
-        btnAddLesson.style.display = "block";
+        btnAddLesson.style.display == "block"
+          ? (btnAddLesson.style.display = "none")
+          : (btnAddLesson.style.display = "block");
       }
 
       /*for (var i = 0; i < students.length; i++) {
@@ -673,30 +677,32 @@ document.addEventListener("DOMContentLoaded", function () {
       //const contentExit = cellExit.value;
       console.log("saveModRowStudent");
       if (button.id == "btn-savemod") {
+        const cEntry = document.querySelector(
+          `#${id} td:nth-child(3) input[type="time"]`
+        );
+        const cExit = document.querySelector(
+          `#${id} td:nth-child(4) input[type="time"]`
+        );
+        const cGrade = document.querySelector(
+          `#${id} td:nth-child(6) input[type="number"]`
+        );
         if (ckPsr.checked == true && ckCmp.checked == true) {
-          const cEntry = document.querySelector(
-            `#${id} td:nth-child(3) input[type="time"]`
-          );
-          const cExit = document.querySelector(
-            `#${id} td:nth-child(4) input[type="time"]`
-          );
-          const cGrade = document.querySelector(
-            `#${id} td:nth-child(6) input[type="number"]`
-          );
-          const contentEntry = cExit.value;
-          const contentExit = cEntry.value;
+          const contentEntry = cEntry.value;
+          const contentExit = cExit.value;
           const contentGrade = cGrade.value;
 
           console.log(contentEntry);
           if (contentEntry != "" && contentGrade != "") {
-            /*register[0].updateAttendance(
+            register[0].updateAttendance(
               lessonDayView,
               id,
               contentEntry,
               contentExit
-            );*/
+            );
             alert("dovrebbe aggiornare ATTENDANCE e GRADE");
-            //@@@@@@@@@@@@@@@@@@@@@@@@@@AGGIUNGERE FUNZIONE PER MODIFICARE GRADE
+            console.log(
+              register[0].updateGrade(lessonDayView, contentGrade, id)
+            );
             //register[0].addGrade(lessonDayView, contentGrade, id);
           } else {
             console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -708,10 +714,23 @@ document.addEventListener("DOMContentLoaded", function () {
             contentEntry,
             contentExit
           );*/
-          alert("dovrebbe aggiornare GRADE");
+          const contentEntry = cEntry.value;
+          const contentExit = cExit.value;
+          alert("dovrebbe aggiornare solo ATTENDANCE");
+          console.log(
+            register[0].updateAttendance(
+              lessonDayView,
+              id,
+              contentEntry,
+              contentExit
+            )
+          );
+          register[0].dropGrade(lessonDayView, id);
           //@@@@@@@@@@@@@@@@òAGGIUNGERE QUI DROP GRADE
         } else if (ckPsr.checked == false && ckCmp.checked == false) {
-          alert("dovrebbe rimuove ATTENDANCES e GRADE");
+          //alert("dovrebbe rimuove ATTENDANCES e GRADE");
+          //console.log("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+          register[0].dropAttendance(lessonDayView, id);
           //@@@@@@@@@@@@@@@AGGIUNGERE DROP GRADE E DROP ATTENDANCE
         } else if (ckPsr.checked == false && ckCmp.checked == true) {
           alert("dovrebbe rimuovere ATTENDANCE e FORZATAMENTE GRADE");
