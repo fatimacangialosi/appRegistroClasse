@@ -6,7 +6,6 @@ let registers = localStorage.getItem("register")
       SchoolRecord.fromJSON(data)
     )
   : [];
-//let registers = [];
 const student = new Student();
 console.log(student.getStudents());
 console.log(registers);
@@ -18,10 +17,7 @@ function connectMatterToRegister(nameMatter) {
 function createRegister(nameMatter) {
   const newRegister = new SchoolRecord(nameMatter);
   registers.push(newRegister);
-  //console.log(newRegister.getGradeList());
-  //console.log(registers[0].getGradeList());
   localStorage.setItem("register", JSON.stringify(registers));
-  //console.log(registers.length);
   window.location.reload();
 
   return;
@@ -45,8 +41,11 @@ document.addEventListener("DOMContentLoaded", function () {
   } else if (pathname.includes("studenti.html")) {
     gestisciDOMStudenti();
   }
+  //@@@@@@@@@@    GESTISCI HOME   @@@@@@@@@@
   function gestisciDOMHome() {
     //QUI IL CODICE PER GESTIRE LA HOME
+    addNewMatterToRegister();
+    viewButtonMatter();
     function addNewMatterToRegister() {
       const btnCreateRegister = document.getElementById("btnCreateRegister");
       btnCreateRegister.addEventListener("click", () => {
@@ -54,10 +53,9 @@ document.addEventListener("DOMContentLoaded", function () {
         createRegister(nameMatter);
       });
     }
-
     function viewButtonMatter() {
       const divButtonMatter = document.getElementById("divButtonMatter");
-      divButtonMatter.innerHTML = ""; // Clear existing content
+      divButtonMatter.innerHTML = "";
       registers.forEach((element) => {
         const button = document.createElement("button");
         button.type = "button";
@@ -69,48 +67,76 @@ document.addEventListener("DOMContentLoaded", function () {
         divButtonMatter.appendChild(button);
       });
     }
-    /*function connectMatterToRegister() {
-      const btnNameMatter = document.getElementById("btnNameMatter");
-      btnCreateRegister.addEventListener("click", () => {
-        const nameMatter = document.getElementById("recipient-name").value;
-        createRegister(nameMatter);
-      });
-    }
-    function connectMatterToRegister(nameMatter){
-      sessionStorage.setItem("nameMatter", nameMatter);
-      window.location.href="registro.html"
-    }*/
-    addNewMatterToRegister();
-    //addNewStudentToApp();
-    viewButtonMatter();
   }
-
+  //@@@@@@@@@@    GESTISCI DOM   @@@@@@@@@@
   function gestisciDOMRegistro() {
     const nameMatter = sessionStorage.getItem("nameMatter");
     const register = registers.filter(
       (elem) => elem.getSubjectName() == nameMatter
     );
     const indexReg = registers.indexOf(register[0]);
-    console.log(indexReg);
-    console.log(register[0]);
-    //console.log(registers[0].getSubjectName());
-    //LE FUNZIONI PER IL POPOLAMENTO DELLA TABLE NEL REGISTRO VANNO QUI
-    function populateNameMatter() {
-      const h2 = document.getElementById("hmatter");
-      h2.innerHTML = "";
-      h2.innerHTML += `${nameMatter}`;
-    }
+
+    lessonDayDatePicker();
+    populateNameMatter();
+
     const btnAddLesson = document.querySelector(".btn-lesson");
+    const btnOpenMod = document.getElementById("btnOpenMod");
+    const btnSaveMod = document.getElementById("btnAddStudent");
+
     btnAddLesson.addEventListener("click", () => {
       var datepickerInput = document.getElementById("datepicker");
       register[0].addLesson(datepickerInput.value);
       registers[indexReg] = register[0];
       localStorage.setItem("register", JSON.stringify(registers));
-      alert(`addLesson: ${datepickerInput.value}`);
+      //alert(`addLesson: ${datepickerInput.value}`);
       populateRegisterTable(datepickerInput.value);
     });
-    // Funzione per inizializzare il datepicker
+    if (btnOpenMod) {
+      btnOpenMod.addEventListener("click", () => {
+        populateAddStudentModal();
+      });
+    }
+    if (btnSaveMod) {
+      let idSelected = [];
+      btnSaveMod.addEventListener("click", () => {
+        const table = document.getElementById("tablemodal");
+        if (table) {
+          console.log("esiste table");
+        } else {
+          console.log("nn esiste table");
+        }
+        for (let i = 1; i < table.rows.length; i++) {
+          const row = table.rows[i];
+          console.log(row.id);
+          const inputElement = row.getElementsByTagName("input");
+          for (let j = 0; j < inputElement.length; j++) {
+            const inputValue = inputElement[j].checked;
+            if (inputValue) {
+              idSelected.push(row.id);
+            }
+          }
+        }
+        console.log(idSelected);
+        const output = register[0].addStudent(...idSelected);
+        //idSelected = [];
+
+        registers[indexReg] = register[0];
+        localStorage.setItem("register", JSON.stringify(registers));
+        idSelected = [];
+        var datepickerInput = document.getElementById("datepicker");
+
+        populateRegisterTable(datepickerInput.value);
+      });
+    }
+
+    function populateNameMatter() {
+      const h2 = document.getElementById("hmatter");
+      h2.innerHTML = "";
+      h2.innerHTML += `${nameMatter}`;
+    }
+
     function lessonDayDatePicker() {
+      // Funzione per inizializzare il datepicker
       var datepickerInput = document.getElementById("datepicker");
       datepickerInput.valueAsDate = new Date();
 
@@ -122,7 +148,6 @@ document.addEventListener("DOMContentLoaded", function () {
         populateRegisterTable(datepickerInput.value);
       });
 
-      // Aggiunta degli eventi per i pulsanti Next e Previous
       var btnNext = document.querySelector(".btn-next");
       btnNext.addEventListener("click", function () {
         var currentDate = new Date(datepickerInput.value);
@@ -146,112 +171,12 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    lessonDayDatePicker();
-
-    /*class SimpleDatepicker {
-      constructor(element) {
-        this.datepicker = element;
-        this.setupEventListeners();
-      }
-
-      getDate() {
-        return new Date(this.datepicker.value);
-      }
-
-      setDate(date) {
-        this.datepicker.valueAsDate = date;
-      }
-
-      setupEventListeners() {
-        // Additional setup can be added here
-      }
-    }
-
-    // Datepicker Initialization
-    var datepickerInput = document.getElementById("datepicker");
-    var simpleDatepicker = new SimpleDatepicker(datepickerInput);
-
-    // Next Button Click Event
-    var btnNext = document.querySelector(".btn-next");
-    btnNext.addEventListener("click", function () {
-      var currentDate = simpleDatepicker.getDate();
-      currentDate.setDate(currentDate.getDate() + 1);
-      simpleDatepicker.setDate(currentDate);
-    });
-
-    // Previous Button Click Event
-    var btnPrev = document.querySelector(".btn-prev");
-    btnPrev.addEventListener("click", function () {
-      var currentDate = simpleDatepicker.getDate();
-      currentDate.setDate(currentDate.getDate() - 1);
-      simpleDatepicker.setDate(currentDate);
-    });*/
-    const btnOpenMod = document.getElementById("btnOpenMod");
-    const btnSaveMod = document.getElementById("btnAddStudent");
-
-    if (btnOpenMod) {
-      btnOpenMod.addEventListener("click", () => {
-        populateAddStudentModal();
-      });
-    }
-    if (btnSaveMod) {
-      let idSelected = [];
-      btnSaveMod.addEventListener("click", () => {
-        const table = document.getElementById("tablemodal");
-        if (table) {
-          console.log("esiste table");
-        } else {
-          console.log("nn esiste table");
-        }
-        // Cicla attraverso le righe della tabella
-        for (let i = 1; i < table.rows.length; i++) {
-          const row = table.rows[i];
-          console.log(row.id);
-          const inputElement = row.getElementsByTagName("input");
-          for (let j = 0; j < inputElement.length; j++) {
-            const inputValue = inputElement[j].checked;
-            if (inputValue) {
-              idSelected.push(row.id);
-              //register[0].addStudent(row.id);
-            }
-          }
-        }
-        console.log(idSelected);
-        const output = register[0].addStudent(...idSelected);
-        //console.log(output);
-        //idSelected = [];
-
-        registers[indexReg] = register[0];
-        localStorage.setItem("register", JSON.stringify(registers));
-        idSelected = [];
-        var datepickerInput = document.getElementById("datepicker");
-
-        populateRegisterTable(datepickerInput.value);
-        //console.log(row.cells[7]);
-        /*const cellChk = row.cells[7];
-          const chk = cellChk.querySelector('input[type="checkbox"]');
-
-          if (chk) {
-            if (chk.checked == true) {
-              idSelected.push(row.id);
-              console.log(row.id);
-            }
-          }*/
-      });
-    }
     function populateAddStudentModal() {
       const listStdView = register[0].getStudentList();
       console.log(listStdView);
       const tbody = document.getElementById("tBodyAdd");
       tbody.innerHTML = "";
       student.getStudents().forEach((elem, index) => {
-        /*tbody.innerHTML += `<tr>
-        <th scope="row">${index}</th>
-        <td>${elem.name}</td>
-        <td>${elem.lastName}</td>
-        <td>${elem.email}</td>
-        <td>${elem.phoneNumber}</td>
-      </tr>`;*/
         console.log(elem.id);
         if (!listStdView.includes(elem.id)) {
           console.log("non include");
@@ -289,17 +214,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }*/
       });
     }
-    function addStudentToMatter() {}
     function populateRegisterTable(lessonDayView) {
-      //const headerRow = document.createElement("tr");
-      //headerRow.innerHTML =
-      //"<th>Nome</th><th>Cognome</th><th>Presenza</th><th>Orario Ingresso</th><th>Orario Uscita</th><th>Voto</th>";
-      console.log("siamo in populate REGISTER TABLE");
       const tBodyReg = document.getElementById("tBodyReg");
-      //tBodyAdd.appendChild(headerRow);
-
-      //const students = student.getStudents();
-
       //POPOLO PRIMA COLONNA TABLE
       tBodyReg.innerHTML = "";
       if (register[0].getLesson(lessonDayView)) {
@@ -330,13 +246,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 modifyRowStudent(checkboxPresenza, id);
               } else {
                 //SEMBRA ENTRI SEMPRE NELL'IF IN OGNI CASO
-                alert("Presenza eliminato correttamente");
                 modifyRowStudent(checkboxPresenza, id);
                 checkboxCompito.checked = false;
-                //registers[0].dropAttendance();
                 console.log("elseee");
               }
-              //addPsrRowStudent()
             });
             cellAtdnc.appendChild(checkboxPresenza);
             const checkboxCompito = document.createElement("input");
@@ -344,19 +257,16 @@ document.addEventListener("DOMContentLoaded", function () {
             checkboxCompito.id = "cmp";
             checkboxCompito.setAttribute("disabled", true);
             checkboxCompito.addEventListener("change", () => {
-              //console.log("ckCompito.checked: "+checkboxPre)
               if (checkboxCompito.checked == true) {
                 console.log("ifffff");
                 modifyRowStudent(checkboxCompito, id);
                 btnRowMod.style.display = "none";
                 btnRowSaveAdd.style.display = "block";
               } else {
-                alert("Compito eliminato correttamente");
                 modifyRowStudent(checkboxCompito, id);
                 //registers[0].dropAttendance();
                 console.log("elseee");
               }
-              //addPsrRowStudent()
             });
             cellCmp.appendChild(checkboxCompito);
             const btnRowMod = document.createElement("button");
@@ -444,7 +354,6 @@ document.addEventListener("DOMContentLoaded", function () {
               //cbPresenze.disabled = false;
               cbCmp.disabled = false;
               if (cellEntryDaModificare && cbPresenze) {
-                // Ora puoi modificare il contenuto della cella come desiderato
                 btnSave.style.display = "block";
                 console.log("eleme.entryTime: " + elem.entryTime);
                 if (elem.entryTime) {
@@ -459,7 +368,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 `#${elem.studentId} td:nth-child(4)`
               );
               if (cellEntryDaModificare2) {
-                // Ora puoi modificare il contenuto della cella come desiderato
                 cellEntryDaModificare2.textContent = elem.exitTime;
               } else {
                 console.error("Riga o cella non trovata con l'id specificato");
@@ -472,10 +380,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 ? (btnAddLesson.style.display = "block")
                 : (btnAddLesson.style.display = "none");
             }
-            /*cbPresenze.checked = false;
-          cbPresenze.disabled = true;
-          cbCmp.checked = false;
-          cbCmp.disabled = true;*/
             console.log("non è il giorno correttooo");
           }
         });
@@ -512,45 +416,6 @@ document.addEventListener("DOMContentLoaded", function () {
           ? (btnAddLesson.style.display = "none")
           : (btnAddLesson.style.display = "block");
       }
-
-      /*for (var i = 0; i < students.length; i++) {
-        const row = document.createElement("tr");
-        const cellnm = document.createElement("td");
-        const cellsrnm = document.createElement("td");
-        const cellAtdnc = document.createElement("td");
-        const cellentry = document.createElement("td");
-        const cellexit = document.createElement("td");
-        const cellgrd = document.createElement("td");
-
-        cellnm.innerHTML = students[i].name; // Corretto: Accesso alle proprietà name
-        cellsrnm.innerHTML = students[i].lastName; // Corretto: Accesso alle proprietà lastName
-
-        // Cio' che riguarda il bottone presenze
-        const checkboxPresenza = document.createElement("input");
-        checkboxPresenza.type = "checkbox";
-        checkboxPresenza.checked = getPresenza(students[i].id);
-        checkboxPresenza.addEventListener("change", function () {
-          updatePresenza(students[i].id, this.checked);
-          studentspopolation();
-        });
-
-        cellAtdnc.appendChild(checkboxPresenza);
-
-        if (checkboxPresenza.checked) {
-          const orarioPresenza = getOrarioPresenza(students[i].id);
-          cellentry.innerHTML = orarioPresenza.entry; // Corretto: Accesso alla proprietà entry
-          cellexit.innerHTML = orarioPresenza.exit; // Corretto: Accesso alla proprietà exit
-          cellgrd.innerHTML = getVoto(students[i].id);
-        }
-
-        row.appendChild(cellnm);
-        row.appendChild(cellsrnm);
-        row.appendChild(cellentry);
-        row.appendChild(cellexit);
-        row.appendChild(cellgrd);
-
-        studentTable.appendChild(row);
-      }*/
     }
 
     function modifyRowStudent(button, id) {
@@ -615,7 +480,6 @@ document.addEventListener("DOMContentLoaded", function () {
             cellGrd.innerHTML = "";
             cellGrd.appendChild(inputGrade);
           } else {
-            //alert("checkbox spenta");
             cellGrd.innerHTML = "";
           }
         } else {
@@ -650,15 +514,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const ckPsr = document.querySelector(
         `#${id} td:nth-child(2) input[type="checkbox"]`
       );
-      /*const cellEntry = document
-        .querySelector(`#${id} td:nth-child(3)`)
-        .querySelectorAll("*")[0].tagName;
-      const cellExit = document
-        .querySelector(`#${id} td:nth-child(4)`)
-        .querySelectorAll("*")[0].tagName;
-      const cellExit2 = document.querySelector(
-        `#${id} td:nth-child(4) input[type="time"]`
-      );*/
       const ckCmp = document.querySelector(
         `#${id} td:nth-child(5) input[type="checkbox"]`
       );
@@ -668,13 +523,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const btnMod = document.querySelector(
         `#${id} td:nth-child(7) button[type="button"]`
       );
-      //console.log(cellEntry);
-      /*for (const child of cellEntry) {
-        console.log(child.tagName);
-      }*/
-
-      //const contentEntry = cellEntry.textContent;
-      //const contentExit = cellExit.value;
       console.log("saveModRowStudent");
       if (button.id == "btn-savemod") {
         const cEntry = document.querySelector(
@@ -699,24 +547,17 @@ document.addEventListener("DOMContentLoaded", function () {
               contentEntry,
               contentExit
             );
-            alert("dovrebbe aggiornare ATTENDANCE e GRADE");
+            //alert("dovrebbe aggiornare ATTENDANCE e GRADE");
             console.log(
               register[0].updateGrade(lessonDayView, contentGrade, id)
             );
-            //register[0].addGrade(lessonDayView, contentGrade, id);
           } else {
             console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
           }
         } else if (ckPsr.checked == true) {
-          /*register[0].updateAttendance(
-            lessonDayView,
-            id,
-            contentEntry,
-            contentExit
-          );*/
           const contentEntry = cEntry.value;
           const contentExit = cExit.value;
-          alert("dovrebbe aggiornare solo ATTENDANCE");
+          //alert("dovrebbe aggiornare solo ATTENDANCE");
           console.log(
             register[0].updateAttendance(
               lessonDayView,
@@ -728,12 +569,13 @@ document.addEventListener("DOMContentLoaded", function () {
           register[0].dropGrade(lessonDayView, id);
           //@@@@@@@@@@@@@@@@òAGGIUNGERE QUI DROP GRADE
         } else if (ckPsr.checked == false && ckCmp.checked == false) {
-          //alert("dovrebbe rimuove ATTENDANCES e GRADE");
-          //console.log("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
           register[0].dropAttendance(lessonDayView, id);
+          register[0].dropGrade(lessonDayView, id);
           //@@@@@@@@@@@@@@@AGGIUNGERE DROP GRADE E DROP ATTENDANCE
         } else if (ckPsr.checked == false && ckCmp.checked == true) {
           alert("dovrebbe rimuovere ATTENDANCE e FORZATAMENTE GRADE");
+          register[0].dropGrade(lessonDayView, id);
+          register[0].dropAttendance(lessonDayView, id);
         }
       } else if (button.id == "btn-saveadd") {
         if (ckPsr.checked == true && ckCmp.checked == false) {
@@ -763,21 +605,16 @@ document.addEventListener("DOMContentLoaded", function () {
       localStorage.setItem("register", JSON.stringify(registers));
       populateRegisterTable(lessonDayView);
     }
-    //populateAddStudentModal();
-    populateNameMatter();
   }
+  //@@@@@@@@@@    GESTISCI DOM STUDENTI   @@@@@@@@@@
   function gestisciDOMStudenti() {
+    addNewStudentToApp();
+    populateStudentTable();
+
     function populateStudentTable() {
       const tbody = document.getElementById("tBodyStd");
       tbody.innerHTML = "";
       student.getStudents().forEach((elem, index) => {
-        /*tbody.innerHTML += `<tr>
-        <th scope="row">${index}</th>
-        <td>${elem.name}</td>
-        <td>${elem.lastName}</td>
-        <td>${elem.email}</td>
-        <td>${elem.phoneNumber}</td>
-      </tr>`;*/
         const row = document.createElement("tr");
         const cellIndex = document.createElement("td");
         const cellName = document.createElement("td");
@@ -836,53 +673,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         tbody.appendChild(row);
       });
-      /*SPOSTARE NEL gestisciDOMStudente()
-      const headerRow = document.createElement("tr");
-      headerRow.innerHTML =
-        "<th>Nome</th><th>Cognome</th><th>Presenza</th><th>Orario Ingresso</th><th>Orario Uscita</th><th>Voto</th>";
-      const studentTable = document.getElementById("tBodyAdd"); //MODIFICARE RIFERIMENTI HTML DEL FILE STUDENT
-      studentTable.appendChild(headerRow);
-
-      const students = student.getStudents();
-
-      for (var i = 0; i < students.length; i++) {
-        const row = document.createElement("tr");
-        const cellnm = document.createElement("td");
-        const cellsrnm = document.createElement("td");
-        const cellAtdnc = document.createElement("td");
-        const cellentry = document.createElement("td");
-        const cellexit = document.createElement("td");
-        const cellgrd = document.createElement("td");
-
-        cellnm.innerHTML = students[i].name; // Corretto: Accesso alle proprietà name
-        cellsrnm.innerHTML = students[i].lastName; // Corretto: Accesso alle proprietà lastName
-
-        // Cio' che riguarda il bottone presenze
-        const checkboxPresenza = document.createElement("input");
-        checkboxPresenza.type = "checkbox";
-        checkboxPresenza.checked = getPresenza(students[i].id);
-        checkboxPresenza.addEventListener("change", function () {
-          updatePresenza(students[i].id, this.checked);
-          studentspopolation();
-        });
-
-        cellAtdnc.appendChild(checkboxPresenza);
-
-        if (checkboxPresenza.checked) {
-          const orarioPresenza = getOrarioPresenza(students[i].id);
-          cellentry.innerHTML = orarioPresenza.entry; // Corretto: Accesso alla proprietà entry
-          cellexit.innerHTML = orarioPresenza.exit; // Corretto: Accesso alla proprietà exit
-          cellgrd.innerHTML = getVoto(students[i].id);
-        }
-
-        row.appendChild(cellnm);
-        row.appendChild(cellsrnm);
-        row.appendChild(cellentry);
-        row.appendChild(cellexit);
-        row.appendChild(cellgrd);
-
-        studentTable.appendChild(row);
-      }*/
     }
     function modStudentRow(id) {
       const cellName = document.querySelector(`#${id} td:nth-child(2)`);
@@ -937,8 +727,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
     function saveStudentRow(id, e) {
-      //const idCorretto = id[id.length - 1];
-      //console.log(idCorretto);
       const cellName = document.querySelector(`#${id} td:nth-child(2) input`);
       const cellLastName = document.querySelector(
         `#${id} td:nth-child(3) input`
@@ -982,12 +770,5 @@ document.addEventListener("DOMContentLoaded", function () {
         populateStudentTable();
       });
     }
-    addNewStudentToApp();
-    populateStudentTable();
   }
 });
-
-//export default student;
-
-//let student = new Student(2, "giuseppe", "barca", "pino@pino.it", "3281'01202");
-//console.log(student);
