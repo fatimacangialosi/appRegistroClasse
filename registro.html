@@ -199,16 +199,22 @@
       <div class="row">
         <div class="col-4">
           <aside>
-            <form action="/action_page.php">
+            <form action="">
               <p><label for="w3review">Argomento della giornata:</label></p>
               <textarea
-                id="w3review"
+                id="txtAreaArgument"
                 name="w3review"
                 rows="4"
                 cols="50"
               ></textarea>
               <br />
-              <input type="button" value="Aggiungi" />
+              <button
+                type="button"
+                class="btn btn-primary btn-lg"
+                id="btnAddArgument"
+              >
+                Aggiungi
+              </button>
             </form>
           </aside>
         </div>

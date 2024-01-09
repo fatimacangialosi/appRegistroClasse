@@ -69,6 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
       (elem) => elem.getSubjectName() == nameMatter
     );
     const indexReg = registers.indexOf(register[0]);
+    console.log(register[0].getLessonList());
 
     lessonDayDatePicker();
     populateNameMatter();
@@ -77,6 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnOpenMod = document.getElementById("btnOpenMod");
     const btnOpenModDel = document.getElementById("btnOpenModDel");
     const btnSaveMod = document.getElementById("btnAddStudent");
+    const btnAddArgument = document.getElementById("btnAddArgument");
 
     btnAddLesson.addEventListener("click", () => {
       var datepickerInput = document.getElementById("datepicker");
@@ -84,16 +86,14 @@ document.addEventListener("DOMContentLoaded", function () {
       saveNewRegister();
       populateRegisterTable(datepickerInput.value);
     });
-    if (btnOpenMod) {
-      btnOpenMod.addEventListener("click", () => {
-        populateAddStudentModal(btnOpenMod);
-      });
-    }
-    if (btnOpenModDel) {
-      btnOpenModDel.addEventListener("click", () => {
-        populateAddStudentModal(btnOpenModDel);
-      });
-    }
+
+    btnOpenMod.addEventListener("click", () => {
+      populateAddStudentModal(btnOpenMod);
+    });
+
+    btnOpenModDel.addEventListener("click", () => {
+      populateAddStudentModal(btnOpenModDel);
+    });
 
     if (btnSaveMod) {
       let idSelected = [];
@@ -121,6 +121,15 @@ document.addEventListener("DOMContentLoaded", function () {
         populateRegisterTable(datepickerInput.value);
       });
     }
+
+    btnAddArgument.addEventListener("click", () => {
+      const datepickerInput = document.getElementById("datepicker");
+      const txtAreaArgument = document.getElementById("txtAreaArgument").value;
+      console.log(txtAreaArgument);
+      const lessonDayView = datepickerInput.value;
+      register[0].addArgumentToLesson(lessonDayView, txtAreaArgument);
+      saveNewRegister();
+    });
 
     function populateNameMatter() {
       const h2 = document.getElementById("hmatter");
@@ -311,11 +320,14 @@ document.addEventListener("DOMContentLoaded", function () {
         //POPOLO COLONNA ORARIO PRESENZE TABLE
         const lessonList = register[0].getLessonList();
         const btnAddLesson = document.querySelector(".btn-lesson");
+        const argumentLesson = document.getElementById("txtAreaArgument");
         //@@Devo cliclare a regime l'array lessonDay e vedere se c'è un giorno esistente come quello mostrato, se non c'è visualizzo vuoto (o l'alert, vediamo)
         lessonList.forEach((lessonDay) => {
           if (lessonDay.lessonDate == lessonDayView) {
             //è presente una lezione nel giorno visualizzato
             btnAddLesson.style.display = "none";
+            console.log(lessonDay.lessonArgument);
+            argumentLesson.value = lessonDay.lessonArgument;
             lessonDay.attendances.forEach((elem) => {
               const btnSave = document.querySelector(
                 `#${elem.studentId} td:nth-child(7) button[type="button"]`
