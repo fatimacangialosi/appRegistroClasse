@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //QUI IL CODICE PER GESTIRE LA HOME
     addNewMatterToRegister();
     viewButtonMatter();
+    addMatterOnMenu();
     function addNewMatterToRegister() {
       const btnCreateRegister = document.getElementById("btnCreateRegister");
       btnCreateRegister.addEventListener("click", () => {
@@ -55,10 +56,26 @@ document.addEventListener("DOMContentLoaded", function () {
         button.type = "button";
         button.className = "btn btn-primary btn-lg";
         button.textContent = element.subjectName;
+        button.style.marginRight = "15px";
+        button.style.backgroundColor = "green";
         button.addEventListener("click", function () {
           connectMatterToRegister(element.subjectName);
         });
         divButtonMatter.appendChild(button);
+      });
+    }
+    function addMatterOnMenu() {
+      const divMenu = document.getElementById("divMenu");
+      divMenu.innerHTML = "";
+      registers.forEach((element) => {
+        const a = document.createElement("a");
+        a.type = "a";
+        a.className = "dropdown-item";
+        a.textContent = element.subjectName;
+        a.addEventListener("click", function () {
+          connectMatterToRegister(element.subjectName);
+        });
+        divMenu.appendChild(a);
       });
     }
   }
