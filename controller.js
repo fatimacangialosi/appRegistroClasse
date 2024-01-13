@@ -648,6 +648,7 @@ document.addEventListener("DOMContentLoaded", function () {
         buttonDelete.type = "button";
         buttonDelete.textContent = "Elimina";
         buttonDelete.className = "btn btn-primary";
+        buttonDelete.style.backgroundColor = "red";
         buttonDelete.addEventListener("click", (e) => {
           student.deleteStudent(elem.id);
           populateStudentTable();
