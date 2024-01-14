@@ -78,7 +78,6 @@ document.addEventListener("DOMContentLoaded", function () {
         divButtonMatter.appendChild(button);
       });
     }
-    
   }
   //@@@@@@@@@@    GESTISCI DOM   @@@@@@@@@@
   function gestisciDOMRegistro() {
@@ -146,6 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const txtAreaArgument = document.getElementById("txtAreaArgument").value;
       console.log(txtAreaArgument);
       const lessonDayView = datepickerInput.value;
+      console.log(lessonDayView, txtAreaArgument);
       register[0].addArgumentToLesson(lessonDayView, txtAreaArgument);
       saveNewRegister();
     });
@@ -240,12 +240,14 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
     function populateRegisterTable(lessonDayView) {
+      console.log("sta popolando..");
       const tBodyReg = document.getElementById("tBodyReg");
       //POPOLO PRIMA COLONNA TABLE
       tBodyReg.innerHTML = "";
       if (register[0].getLesson(lessonDayView)) {
         const studentList = register[0].getStudentList();
         studentList.forEach((id, index) => {
+          console.log("studentlist");
           const row = document.createElement("tr");
           const cellStud = document.createElement("td");
           const cellAtdnc = document.createElement("td");
@@ -340,10 +342,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const lessonList = register[0].getLessonList();
         const btnAddLesson = document.querySelector(".btn-lesson");
         const argumentLesson = document.getElementById("txtAreaArgument");
+        console.log("sta bloccando");
+        //btnAddLesson.style.display = "block";
+
         //@@Devo cliclare a regime l'array lessonDay e vedere se c'è un giorno esistente come quello mostrato, se non c'è visualizzo vuoto (o l'alert, vediamo)
         lessonList.forEach((lessonDay) => {
+          console.log("qua");
           if (lessonDay.lessonDate == lessonDayView) {
-            //è presente una lezione nel giorno visualizzato
+            console.log("è presente una lezione nel giorno visualizzato");
             btnAddLesson.style.display = "none";
             console.log(lessonDay.lessonArgument);
             argumentLesson.value = lessonDay.lessonArgument;
@@ -382,11 +388,13 @@ document.addEventListener("DOMContentLoaded", function () {
               }
             });
           } else {
-            if (btnAddLesson) {
-              btnAddLesson.style.display == "block"
-                ? (btnAddLesson.style.display = "block")
-                : (btnAddLesson.style.display = "none");
-            }
+            /*if (btnAddLesson) {
+              btnAddLesson.style.display = "none"
+                ? (btnAddLesson.style.display = "none")
+                : (btnAddLesson.style.display = "block");
+            }*/
+
+            console.log("else");
           }
         });
 
@@ -416,9 +424,10 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       } else {
         const btnAddLesson = document.querySelector(".btn-lesson");
-        btnAddLesson.style.display == "block"
-          ? (btnAddLesson.style.display = "none")
-          : (btnAddLesson.style.display = "block");
+        btnAddLesson.style.display = "block";
+        console.log("sto bloccando esterno");
+        //? (btnAddLesson.style.display = "block")
+        //: (btnAddLesson.style.display = "none");
       }
     }
 
