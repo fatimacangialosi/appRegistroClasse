@@ -68,10 +68,9 @@ document.addEventListener("DOMContentLoaded", function () {
       registers.forEach((element) => {
         const button = document.createElement("button");
         button.type = "button";
-        button.className = "btn btn-primary btn-lg";
+        button.className = "btn btn-outline-success";
         button.textContent = element.subjectName;
         button.style.marginRight = "15px";
-        button.style.backgroundColor = "green";
         button.addEventListener("click", function () {
           connectMatterToRegister(element.subjectName);
         });
@@ -293,14 +292,14 @@ document.addEventListener("DOMContentLoaded", function () {
             const btnRowSaveMod = document.createElement("button");
             const btnRowSaveAdd = document.createElement("button");
             btnRowMod.type = "button";
-            btnRowMod.className = "btn btn-primary btn-lg";
+            btnRowMod.className = "btn btn-outline-warning";
             btnRowMod.innerText = "Modifica";
             btnRowSaveMod.type = "button";
-            btnRowSaveMod.className = "btn btn-primary btn-lg";
+            btnRowSaveMod.className = "btn btn-outline-info";
             btnRowSaveMod.innerText = "Save";
             btnRowSaveMod.id = "btn-savemod";
             btnRowSaveAdd.type = "button";
-            btnRowSaveAdd.className = "btn btn-primary btn-lg";
+            btnRowSaveAdd.className = "btn btn-outline-info";
             btnRowSaveAdd.innerText = "Save";
             btnRowSaveAdd.id = "btn-saveadd";
             btnRowMod.style.display = "none";
@@ -638,7 +637,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const buttonUpdate = document.createElement("button");
         buttonUpdate.type = "button";
         buttonUpdate.textContent = "Modifica";
-        buttonUpdate.className = "btn btn-primary";
+        buttonUpdate.className = "btn btn-outline-warning";
         buttonUpdate.addEventListener("click", () => {
           modStudentRow(elem.id);
           buttonUpdate.style.display = "none";
@@ -659,8 +658,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const buttonDelete = document.createElement("button");
         buttonDelete.type = "button";
         buttonDelete.textContent = "Elimina";
-        buttonDelete.className = "btn btn-primary";
-        buttonDelete.style.backgroundColor = "red";
+        buttonDelete.className = "btn btn-outline-danger";
         buttonDelete.addEventListener("click", (e) => {
           student.deleteStudent(elem.id);
           populateStudentTable();

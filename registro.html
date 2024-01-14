@@ -63,10 +63,7 @@
               Registri
             </a>
             <div id="divMenu" class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <!--<a class="dropdown-item" href="#">Italiano</a>
-              <a class="dropdown-item" href="#">Matematica</a>
-              <a class="dropdown-item" href="#">Inglese</a>
-              <a class="dropdown-item" href="#">Scienza</a>-->
+    
             </div>
           </li>
         </ul>
@@ -74,24 +71,15 @@
     </nav>
     <div class="container">
       <h2 id="hmatter"></h2>
-      <!--<label for="materia"></label>
-        <select id="materia" name="materia">
-        <option value="seleziona">Seleziona materia</option>
-        <option value="italiano">Italiano</option>
-        <option value="inglese">Inglese</option>
-        <option value="scienza">Scienza</option>
-        <option value="matematica">Matematica</option>
-      </select>-->
-      <div>
+     
+      <div style="display: flex;" style="align-items:center;">
         <label for="datepicker">Select Date:</label>
         <input type="date" id="datepicker" />
 
-        <button class="btn-prev btn btn-primary">Previous</button>
-        <button class="btn-next btn btn-primary">Next</button>
-        <button class="btn-lesson btn btn-primary">Registra lezione</button>
-        <!--<button onclick="previousDay()">-</button>
-        <div id="dateDisplay"><span id="currentDate">2023-12-18</span></div>
-        <button onclick="nextDay()">+</button>-->
+        <button class="btn-prev btn-outline-primary btn-sm" style="margin-left: 10px;" >Previous</button>
+        <button class="btn-next btn-outline-primary btn-sm" style="margin-left: 10px;">Next</button>
+        <button class="btn-lesson btn-outline-primary btn-sm" style="margin-left: 10px;">Registra lezione</button>
+        
       </div>
       <div class="row">
         <div class="col-12">
@@ -104,7 +92,7 @@
                     type="button"
                     data-toggle="modal"
                     href="#addSModal"
-                    class="btn btn-primary btn-lg"
+                    class="btn btn-outline-primary btn-lg"
                     id="btnOpenMod"
                   >
                     +
@@ -113,7 +101,7 @@
                     type="button"
                     data-toggle="modal"
                     href="#addSModal"
-                    class="btn btn-primary btn-lg"
+                    class="btn btn-outline-primary btn-lg"
                     id="btnOpenModDel"
                   >
                     -
@@ -128,72 +116,10 @@
               </tr>
             </thead>
             <tbody id="tBodyReg">
-              <!--<tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>328101556</td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td>328101556</td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>Larry</td>
-                <td>the Bird</td>
-                <td>@twitter</td>
-                <td>328101556</td>
-              </tr>-->
+
             </tbody>
           </table>
-          <!--<table class="table">
-            <tr>
-              <th id="ciao">
-                Studente
-                <button
-                  type="button"
-                  data-toggle="modal"
-                  href="#addSModal"
-                  class="btn btn-primary btn-lg"
-                  id="btnOpenMod"
-                >
-                  +
-                </button>
-              </th>
-              <th>Presenza</th>
-              <th>Orario entrata</th>
-              <th>Orario uscita</th>
-              <th>Compito</th>
-              <th>Voto</th>
-            </tr>
-            <tr>
-              <td></td>
-              <td>
-                <input
-                  type="radio"
-                  id="presenza"
-                  name="presenza"
-                  value="presenza"
-                />
-              </td>
-              <td></td>
-              <td></td>
-              <td>
-                <input
-                  type="radio"
-                  id="compito"
-                  name="compito"
-                  value="compito"
-                />
-              </td>
-              <td></td>
-            </tr>
-          </table>-->
+          
         </div>
       </div>
       <div class="row">
@@ -210,7 +136,7 @@
               <br />
               <button
                 type="button"
-                class="btn btn-primary btn-lg"
+                class="btn btn-outline-primary btn-lg"
                 id="btnAddArgument"
               >
                 Aggiungi
