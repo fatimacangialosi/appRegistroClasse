@@ -28,6 +28,20 @@ function createStudent(name, lastName, email, phoneNumber) {
 document.addEventListener("DOMContentLoaded", function () {
   const pathname = window.location.pathname;
 
+  function addMatterOnMenu() {
+    const divMenu = document.getElementById("divMenu");
+    divMenu.innerHTML = "";
+    registers.forEach((element) => {
+      const a = document.createElement("a");
+      a.type = "a";
+      a.className = "dropdown-item";
+      a.textContent = element.subjectName;
+      a.addEventListener("click", function () {
+        connectMatterToRegister(element.subjectName);
+      });
+      divMenu.appendChild(a);
+    });
+  }
   if (pathname.includes("home.html")) {
     gestisciDOMHome();
   } else if (pathname.includes("registro.html")) {
@@ -64,20 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
         divButtonMatter.appendChild(button);
       });
     }
-    function addMatterOnMenu() {
-      const divMenu = document.getElementById("divMenu");
-      divMenu.innerHTML = "";
-      registers.forEach((element) => {
-        const a = document.createElement("a");
-        a.type = "a";
-        a.className = "dropdown-item";
-        a.textContent = element.subjectName;
-        a.addEventListener("click", function () {
-          connectMatterToRegister(element.subjectName);
-        });
-        divMenu.appendChild(a);
-      });
-    }
+    
   }
   //@@@@@@@@@@    GESTISCI DOM   @@@@@@@@@@
   function gestisciDOMRegistro() {
@@ -90,6 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     lessonDayDatePicker();
     populateNameMatter();
+    addMatterOnMenu();
 
     const btnAddLesson = document.querySelector(".btn-lesson");
     const btnOpenMod = document.getElementById("btnOpenMod");
@@ -603,6 +605,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function gestisciDOMStudenti() {
     addNewStudentToApp();
     populateStudentTable();
+    addMatterOnMenu();
 
     function populateStudentTable() {
       const tbody = document.getElementById("tBodyStd");
